@@ -171,4 +171,12 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { scrapeBraveSearch };
+module.exports = {
+  randomItem,
+  sleep,
+  extractCookies,
+  isBraveDomain,
+  extractUrls,
+  fetchWithRetry,
+  scrapeBraveSearch,
+};
