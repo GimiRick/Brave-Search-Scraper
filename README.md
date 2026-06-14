@@ -72,3 +72,11 @@ brave-search-scraper/
 ## About GimiRick
 
 We build open source LLMs and AI systems. Nothing fancy, just solid work on performance and research that actually helps people. Founded by Mohammad Faiz.
+
+## License
+
+CC BY-ND 4.0 — Attribution-NoDerivatives 4.0 International.
+
+Permission is granted to view and run this code. No modifications, alterations, or derivative works are permitted.
+
+See the [LICENSE](LICENSE) file for the full legal text.

@@ -1,3 +1,8 @@
+// Brave Search Scraper — https://github.com/GimiRick/Brave-Search-Scraper
+// License: CC BY-ND 4.0 — see LICENSE file in project root.
+// Permission is granted to view and run this code.
+// No modifications, alterations, or derivative works are permitted.
+
 'use strict';
 const { describe, it } = require('node:test');
 const assert = require('node:assert');
