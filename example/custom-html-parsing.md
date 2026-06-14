@@ -23,15 +23,15 @@ const cheerio = require('cheerio');
 const { extractUrls } = require('./src/scraper');
 
 async function customSearch(query) {
-  const response = await axios.get('https://search.brave.com/search', {
-    params: { q: query },
-    headers: {
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-    },
-  });
+ const response = await axios.get('https://search.brave.com/search', {
+ params: { q: query },
+ headers: {
+ 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+ },
+ });
 
-  const $ = cheerio.load(response.data);
-  return extractUrls($);
+ const $ = cheerio.load(response.data);
+ return extractUrls($);
 }
 
 customSearch('climate technology').then(urls => console.log(urls));
@@ -41,9 +41,9 @@ customSearch('climate technology').then(urls => console.log(urls));
 
 It looks for links in three places on the page:
 
-1. **`<a href="...">`** — standard anchor tags
-2. **`[data-result-url]`** — Brave's data attribute for result URLs
-3. **`[data-url]`** — another data attribute Brave uses
+1. **`<a href="...">`**: standard anchor tags
+2. **`[data-result-url]`**: Brave's data attribute for result URLs
+3. **`[data-url]`**: another data attribute Brave uses
 
 It skips:
 

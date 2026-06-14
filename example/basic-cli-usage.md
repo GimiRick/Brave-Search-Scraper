@@ -10,8 +10,8 @@ It prints a JSON array of URLs to your terminal:
 
 ```json
 [
-  "https://en.wikipedia.org/wiki/Machine_learning",
-  "https://www.ibm.com/topics/machine-learning"
+ "https://en.wikipedia.org/wiki/Machine_learning",
+ "https://www.ibm.com/topics/machine-learning"
 ]
 ```
 
@@ -41,5 +41,5 @@ Or set the SEARCH_QUERY environment variable.
 
 ## Exit codes
 
-- `0` — success (results printed, or empty array `[]`)
-- `1` — error (no query given, or scraping failed)
+- `0`: success (results printed, or empty array `[]`)
+- `1`: error (no query given, or scraping failed)

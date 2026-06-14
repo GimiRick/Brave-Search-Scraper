@@ -35,8 +35,8 @@ Output is a JSON array of URL strings:
 
 ```json
 [
-  "https://en.wikipedia.org/wiki/Machine_learning",
-  "https://www.ibm.com/topics/machine-learning"
+ "https://en.wikipedia.org/wiki/Machine_learning",
+ "https://www.ibm.com/topics/machine-learning"
 ]
 ```
 
@@ -62,13 +62,13 @@ Import only what you need. All internal functions are exported:
 
 ```js
 const {
-  scrapeBraveSearch,
-  extractUrls,
-  extractCookies,
-  fetchWithRetry,
-  isBraveDomain,
-  randomItem,
-  sleep,
+ scrapeBraveSearch,
+ extractUrls,
+ extractCookies,
+ fetchWithRetry,
+ isBraveDomain,
+ randomItem,
+ sleep,
 } = require('gimirick-brave-search-scraper');
 ```
 
@@ -80,9 +80,9 @@ const { scrapeBraveSearch } = require('gimirick-brave-search-scraper');
 const queries = ['node.js tutorial', 'python vs javascript', 'rust programming'];
 
 for (const query of queries) {
-  const urls = await scrapeBraveSearch(query);
-  console.log(`"${query}" → ${urls.length} results`);
-  console.log(urls.join('\n'));
+ const urls = await scrapeBraveSearch(query);
+ console.log(`"${query}" → ${urls.length} results`);
+ console.log(urls.join('\n'));
 }
 ```
 
@@ -95,10 +95,10 @@ const { fetchWithRetry } = require('gimirick-brave-search-scraper');
 
 // Retry up to 5 times
 const response = await fetchWithRetry(
-  'https://search.brave.com/search',
-  { q: 'artificial intelligence' },
-  { 'User-Agent': 'Mozilla/5.0 ...' },
-  5
+ 'https://search.brave.com/search',
+ { q: 'artificial intelligence' },
+ { 'User-Agent': 'Mozilla/5.0 ...' },
+ 5
 );
 ```
 
@@ -124,7 +124,7 @@ const axios = require('axios');
 const { extractCookies } = require('gimirick-brave-search-scraper');
 
 const response = await axios.get('https://search.brave.com/', {
-  headers: { 'User-Agent': 'Mozilla/5.0 ...' },
+ headers: { 'User-Agent': 'Mozilla/5.0 ...' },
 });
 
 const cookies = extractCookies(response.headers['set-cookie']);
@@ -137,10 +137,10 @@ console.log(cookies); // "session=abc123; token=xyz"
 const { isBraveDomain } = require('gimirick-brave-search-scraper');
 
 const urls = [
-  'https://brave.com/download',
-  'https://example.com/article',
-  'https://support.brave.com/help',
-  'https://en.wikipedia.org/wiki/Brave',
+ 'https://brave.com/download',
+ 'https://example.com/article',
+ 'https://support.brave.com/help',
+ 'https://en.wikipedia.org/wiki/Brave',
 ];
 
 const external = urls.filter(url => !isBraveDomain(new URL(url).hostname));
@@ -161,8 +161,8 @@ await sleep(2000); // wait 2 seconds before next request
 const { randomItem } = require('gimirick-brave-search-scraper');
 
 const agents = [
-  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/125.0',
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_5) Safari/605.1',
+ 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/125.0',
+ 'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_5) Safari/605.1',
 ];
 
 const agent = randomItem(agents);
@@ -197,8 +197,8 @@ docker run --rm -e SEARCH_QUERY="your query" brave-scraper
 
 | Code | Meaning |
 | :--- | :--- |
-| `0` | Success — results printed, or empty array `[]` |
-| `1` | Error — no query provided, or scraping failed |
+| `0` | Success: results printed, or empty array `[]` |
+| `1` | Error: no query provided, or scraping failed |
 
 ## Project structure
 
@@ -217,7 +217,7 @@ Part of the GimiRick toolchain. We build open source LLMs and AI systems. Founde
 
 ## License
 
-CC BY-NC-ND 4.0 — Attribution-NonCommercial-NoDerivatives 4.0 International.
+CC BY-NC-ND 4.0: Attribution-NonCommercial-NoDerivatives 4.0 International.
 
 Permission is granted to view and run this code. No modifications, alterations, or derivative works are permitted.
 

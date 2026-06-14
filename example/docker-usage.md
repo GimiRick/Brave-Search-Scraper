@@ -1,6 +1,6 @@
 # Docker Usage
 
-Run the scraper inside a Docker container — no Node.js needed on your machine.
+Run the scraper inside a Docker container, no Node.js needed on your machine.
 
 ## Build the image
 
