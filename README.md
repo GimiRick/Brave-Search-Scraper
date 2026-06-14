@@ -1,6 +1,6 @@
-# gimirick-brave-search-scraper
+# Brave Search Scraper
 
-gimirick-brave-search-scraper is a Node.js library for scraping Brave Search, easily. It uses axios and cheerio to fetch and parse Brave Search results, returning a clean array of external URLs.
+Brave Search Scraper is a Node.js library for scraping Brave Search, easily. It uses axios and cheerio to fetch and parse Brave Search results, returning a clean array of external URLs.
 
 ## Installation
 
@@ -201,7 +201,7 @@ docker run --rm -e SEARCH_QUERY="your query" brave-scraper
 ## Project structure
 
 ```text
-gimirick-brave-search-scraper/
+brave-search-scraper/
   src/scraper.js      main scraper (also the module entry point)
   test/scraper.test.js  unit and integration tests
   Dockerfile          production Docker image
