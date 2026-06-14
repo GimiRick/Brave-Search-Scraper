@@ -8,6 +8,8 @@ To install, run the following command:
 
 ```bash
 npm i gimirick-brave-search-scraper
+
+[npm package](https://www.npmjs.com/package/gimirick-brave-search-scraper)
 ```
 
 Or clone and install locally:
