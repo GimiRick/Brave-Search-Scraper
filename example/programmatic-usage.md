@@ -5,7 +5,7 @@ You can import the scraper into your own Node.js project instead of using the CL
 ## Install
 
 ```bash
-npm install brave-search-scraper
+npm install gimirick-brave-search-scraper
 ```
 
 If you're using it locally from the repo, just require the path:

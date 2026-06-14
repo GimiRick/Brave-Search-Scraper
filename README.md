@@ -1,6 +1,6 @@
-# Brave Search Scraper
+# gimirick-brave-search-scraper
 
-Brave Search Scraper is a Node.js library for scraping Brave Search, easily. It uses axios and cheerio to fetch and parse Brave Search results, returning a clean array of external URLs.
+gimirick-brave-search-scraper is a Node.js library for scraping Brave Search, easily. It uses axios and cheerio to fetch and parse Brave Search results, returning a clean array of external URLs.
 
 ## Installation
 
@@ -23,7 +23,7 @@ npm install
 To get results for a search query, use the `scrapeBraveSearch` function:
 
 ```js
-const { scrapeBraveSearch } = require('brave-search-scraper');
+const { scrapeBraveSearch } = require('gimirick-brave-search-scraper');
 
 const urls = await scrapeBraveSearch('machine learning');
 console.log(urls);
@@ -67,13 +67,13 @@ const {
   isBraveDomain,
   randomItem,
   sleep,
-} = require('brave-search-scraper');
+} = require('gimirick-brave-search-scraper');
 ```
 
 ### Searching multiple queries
 
 ```js
-const { scrapeBraveSearch } = require('brave-search-scraper');
+const { scrapeBraveSearch } = require('gimirick-brave-search-scraper');
 
 const queries = ['node.js tutorial', 'python vs javascript', 'rust programming'];
 
@@ -89,7 +89,7 @@ for (const query of queries) {
 By default the scraper retries up to 3 times on failures or rate limits. Pass a custom count as the fourth argument to `fetchWithRetry`:
 
 ```js
-const { fetchWithRetry } = require('brave-search-scraper');
+const { fetchWithRetry } = require('gimirick-brave-search-scraper');
 
 // Retry up to 5 times
 const response = await fetchWithRetry(
@@ -106,7 +106,7 @@ If you already fetched the page yourself, use `extractUrls` directly with a Chee
 
 ```js
 const cheerio = require('cheerio');
-const { extractUrls } = require('brave-search-scraper');
+const { extractUrls } = require('gimirick-brave-search-scraper');
 
 const $ = cheerio.load(existingHtml);
 const urls = extractUrls($);
@@ -119,7 +119,7 @@ If you want to handle session cookies yourself:
 
 ```js
 const axios = require('axios');
-const { extractCookies } = require('brave-search-scraper');
+const { extractCookies } = require('gimirick-brave-search-scraper');
 
 const response = await axios.get('https://search.brave.com/', {
   headers: { 'User-Agent': 'Mozilla/5.0 ...' },
@@ -132,7 +132,7 @@ console.log(cookies); // "session=abc123; token=xyz"
 ### Filter Brave domains from a URL list
 
 ```js
-const { isBraveDomain } = require('brave-search-scraper');
+const { isBraveDomain } = require('gimirick-brave-search-scraper');
 
 const urls = [
   'https://brave.com/download',
@@ -148,7 +148,7 @@ const external = urls.filter(url => !isBraveDomain(new URL(url).hostname));
 ### Throttle requests with sleep
 
 ```js
-const { sleep } = require('brave-search-scraper');
+const { sleep } = require('gimirick-brave-search-scraper');
 
 await sleep(2000); // wait 2 seconds before next request
 ```
@@ -156,7 +156,7 @@ await sleep(2000); // wait 2 seconds before next request
 ### Rotate user agents
 
 ```js
-const { randomItem } = require('brave-search-scraper');
+const { randomItem } = require('gimirick-brave-search-scraper');
 
 const agents = [
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/125.0',
@@ -201,7 +201,7 @@ docker run --rm -e SEARCH_QUERY="your query" brave-scraper
 ## Project structure
 
 ```text
-brave-search-scraper/
+gimirick-brave-search-scraper/
   src/scraper.js      main scraper (also the module entry point)
   test/scraper.test.js  unit and integration tests
   Dockerfile          production Docker image
