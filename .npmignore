@@ -1,0 +1,8 @@
+.github/
+test/
+example/
+Dockerfile
+.dockerignore
+SECURITY.md
+node_modules
+.npmignore
