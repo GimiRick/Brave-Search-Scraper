@@ -1,77 +1,217 @@
 # Brave Search Scraper
 
-A Node.js scraper that searches Brave Search and returns result URLs. Built with axios and cheerio. Runs in Docker.
+Brave Search Scraper is a Node.js library for scraping Brave Search, easily. It uses axios and cheerio to fetch and parse Brave Search results, returning a clean array of external URLs.
 
-Part of the GimiRick toolchain. We build open source LLMs and AI systems. Nothing fancy, just solid work on performance and research that actually helps people.
+## Installation
 
-Founded by Mohammad Faiz.
+To install, run the following command:
 
-## How it works
+```bash
+pip {Coming-soon}
+```
 
-The scraper visits Brave Search, grabs the HTML, and pulls out URLs. Brave blocks automated requests pretty aggressively so there is some retry logic built in. It rotates through a few different user agents and grabs cookies from the homepage before hitting search. If it gets rate limited it waits and tries again with exponential backoff.
+Or clone and install locally:
+
+```bash
+git clone https://github.com/GimiRick/Brave-Search-Scraper.git
+cd Brave-Search-Scraper
+npm install
+```
 
 ## Usage
 
-### Local
+To get results for a search query, use the `scrapeBraveSearch` function:
+
+```js
+const { scrapeBraveSearch } = require('brave-search-scraper');
+
+const urls = await scrapeBraveSearch('machine learning');
+console.log(urls);
+```
+
+Output is a JSON array of URL strings:
+
+```json
+[
+  "https://en.wikipedia.org/wiki/Machine_learning",
+  "https://www.ibm.com/topics/machine-learning"
+]
+```
+
+## CLI Usage
+
+You can also run it directly from the terminal without writing any code:
 
 ```bash
-npm install
 node src/scraper.js "your search query"
 ```
 
-You can also use the SEARCH_QUERY environment variable.
+Or set the `SEARCH_QUERY` environment variable instead:
 
 ```bash
-SEARCH_QUERY="node.js scraping" node src/scraper.js
+SEARCH_QUERY="your search query" node src/scraper.js
 ```
 
-### Docker
+## Additional options
+
+### Programmatic usage
+
+Import only what you need. All internal functions are exported:
+
+```js
+const {
+  scrapeBraveSearch,
+  extractUrls,
+  extractCookies,
+  fetchWithRetry,
+  isBraveDomain,
+  randomItem,
+  sleep,
+} = require('brave-search-scraper');
+```
+
+### Searching multiple queries
+
+```js
+const { scrapeBraveSearch } = require('brave-search-scraper');
+
+const queries = ['node.js tutorial', 'python vs javascript', 'rust programming'];
+
+for (const query of queries) {
+  const urls = await scrapeBraveSearch(query);
+  console.log(`"${query}" → ${urls.length} results`);
+  console.log(urls.join('\n'));
+}
+```
+
+### Custom retry count
+
+By default the scraper retries up to 3 times on failures or rate limits. Pass a custom count as the fourth argument to `fetchWithRetry`:
+
+```js
+const { fetchWithRetry } = require('brave-search-scraper');
+
+// Retry up to 5 times
+const response = await fetchWithRetry(
+  'https://search.brave.com/search',
+  { q: 'artificial intelligence' },
+  { 'User-Agent': 'Mozilla/5.0 ...' },
+  5
+);
+```
+
+### Parse HTML you already have
+
+If you already fetched the page yourself, use `extractUrls` directly with a Cheerio instance:
+
+```js
+const cheerio = require('cheerio');
+const { extractUrls } = require('brave-search-scraper');
+
+const $ = cheerio.load(existingHtml);
+const urls = extractUrls($);
+console.log(urls);
+```
+
+### Extract cookies manually
+
+If you want to handle session cookies yourself:
+
+```js
+const axios = require('axios');
+const { extractCookies } = require('brave-search-scraper');
+
+const response = await axios.get('https://search.brave.com/', {
+  headers: { 'User-Agent': 'Mozilla/5.0 ...' },
+});
+
+const cookies = extractCookies(response.headers['set-cookie']);
+console.log(cookies); // "session=abc123; token=xyz"
+```
+
+### Filter Brave domains from a URL list
+
+```js
+const { isBraveDomain } = require('brave-search-scraper');
+
+const urls = [
+  'https://brave.com/download',
+  'https://example.com/article',
+  'https://support.brave.com/help',
+  'https://en.wikipedia.org/wiki/Brave',
+];
+
+const external = urls.filter(url => !isBraveDomain(new URL(url).hostname));
+// ['https://example.com/article', 'https://en.wikipedia.org/wiki/Brave']
+```
+
+### Throttle requests with sleep
+
+```js
+const { sleep } = require('brave-search-scraper');
+
+await sleep(2000); // wait 2 seconds before next request
+```
+
+### Rotate user agents
+
+```js
+const { randomItem } = require('brave-search-scraper');
+
+const agents = [
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/125.0',
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_5) Safari/605.1',
+];
+
+const agent = randomItem(agents);
+```
+
+## Docker
+
+No Node.js installation required. Build and run with Docker:
 
 ```bash
 docker build -t brave-scraper .
 docker run --rm brave-scraper "your search query"
 ```
 
-With an environment variable instead.
+With an environment variable:
 
 ```bash
 docker run --rm -e SEARCH_QUERY="your query" brave-scraper
 ```
 
-## Output
-
-Prints a JSON array of URLs to stdout.
-
-```json
-[
-  "https://example.com/page1",
-  "https://example.com/page2"
-]
-```
-
-If something goes wrong it prints an error message to stderr and exits with code 1.
-
 ## How it works under the hood
 
-1. Visits the Brave homepage to pick up any cookies the server wants to set.
-2. Waits 1 to 3 seconds so it doesn't look like a bot.
-3. Sends the actual search request with a different user agent.
-4. If Brave returns a 429 (rate limited) it waits longer each time and retries up to 3 times.
-5. Parses the HTML with cheerio and pulls out every relevant link.
-6. Filters out Brave's own domains (brave.com, brave.app) so you only get external results.
+1. Visits the Brave Search homepage to collect session cookies.
+2. Waits 1–3 seconds with random jitter to avoid detection.
+3. Sends the search request with a rotated User-Agent and the collected cookies.
+4. If Brave returns a `429 Too Many Requests`, waits with exponential backoff and retries (up to 3 times by default).
+5. Parses the HTML with cheerio, extracting URLs from `<a href>`, `[data-result-url]`, and `[data-url]` attributes.
+6. Filters out all Brave-owned domains (`brave.com`, `brave.app` and subdomains).
+7. Deduplicates and returns a clean array of external URLs.
+
+## Exit codes (CLI)
+
+| Code | Meaning |
+| :--- | :--- |
+| `0` | Success — results printed, or empty array `[]` |
+| `1` | Error — no query provided, or scraping failed |
 
 ## Project structure
 
 ```text
 brave-search-scraper/
-  src/scraper.js    the scraper
-  Dockerfile        builds a production image
-  package.json      dependencies (axios, cheerio)
+  src/scraper.js      main scraper (also the module entry point)
+  test/scraper.test.js  unit and integration tests
+  Dockerfile          production Docker image
+  package.json        dependencies and scripts
+  example/            usage examples for each feature
 ```
 
-## About GimiRick
+## About
 
-We build open source LLMs and AI systems. Nothing fancy, just solid work on performance and research that actually helps people. Founded by Mohammad Faiz.
+Part of the GimiRick toolchain. We build open source LLMs and AI systems. Founded by Mohammad Faiz.
 
 ## License
 
