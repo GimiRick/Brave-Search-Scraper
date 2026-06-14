@@ -1,6 +1,6 @@
 # Security Policy
 
-We take security seriously. If you find something that does not look right — a vulnerability, a leak, or just something that feels off — please tell us directly instead of posting it publicly.
+We take security seriously. If you find something that does not look right, a vulnerability, a leak, or just something that feels off, please tell us directly instead of posting it publicly.
 
 ## How to report
 
@@ -18,7 +18,7 @@ That is it. No complicated forms, no bureaucracy. Just a clear description so we
 
 ## What happens next
 
-We will acknowledge your report within a few days, investigate it, and keep you posted on what we are doing about it. Once it is resolved, we will thank you for the report — and if you are okay with it, we can mention your contribution in the release notes.
+We will acknowledge your report within a few days, investigate it, and keep you posted on what we are doing about it. Once it is resolved, we will thank you for the report, and if you are okay with it, we can mention your contribution in the release notes.
 
 ## A note on responsible disclosure
 
