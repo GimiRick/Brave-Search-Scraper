@@ -26,6 +26,11 @@ function extractCookies(setCookieHeader) {
   return cookies.map(c => c.split(';')[0]).join('; ');
 }
 
+function isBraveDomain(hostname) {
+  return hostname === 'brave.com' || hostname === 'brave.app' ||
+    hostname.endsWith('.brave.com') || hostname.endsWith('.brave.app');
+}
+
 function extractUrls($) {
   const urls = new Set();
 
@@ -33,8 +38,7 @@ function extractUrls($) {
     const href = $(el).attr('href');
     if (!href || href.startsWith('/') || href.startsWith('#') || href.startsWith('javascript:')) return;
     try {
-      const hostname = new URL(href).hostname;
-      if (hostname === 'brave.com' || hostname.endsWith('.brave.com') || hostname.endsWith('.brave.app')) return;
+      if (isBraveDomain(new URL(href).hostname)) return;
     } catch {
       return;
     }
@@ -43,12 +47,22 @@ function extractUrls($) {
 
   $('[data-result-url]').each((_, el) => {
     const url = $(el).attr('data-result-url');
-    if (url) urls.add(url);
+    if (!url) return;
+    try {
+      if (!isBraveDomain(new URL(url).hostname)) urls.add(url);
+    } catch {
+      return;
+    }
   });
 
   $('[data-url]').each((_, el) => {
     const url = $(el).attr('data-url');
-    if (url && (url.startsWith('http://') || url.startsWith('https://'))) urls.add(url);
+    if (!url || !(url.startsWith('http://') || url.startsWith('https://'))) return;
+    try {
+      if (!isBraveDomain(new URL(url).hostname)) urls.add(url);
+    } catch {
+      return;
+    }
   });
 
   return [...urls];
