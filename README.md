@@ -75,7 +75,7 @@ We build open source LLMs and AI systems. Nothing fancy, just solid work on perf
 
 ## License
 
-CC BY-ND 4.0 — Attribution-NoDerivatives 4.0 International.
+CC BY-NC-ND 4.0 — Attribution-NonCommercial-NoDerivatives 4.0 International.
 
 Permission is granted to view and run this code. No modifications, alterations, or derivative works are permitted.
 

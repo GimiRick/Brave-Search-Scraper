@@ -1,5 +1,5 @@
 // Brave Search Scraper — https://github.com/GimiRick/Brave-Search-Scraper
-// License: CC BY-ND 4.0 — see LICENSE file in project root.
+// License: CC BY-NC-ND 4.0 — see LICENSE file in project root.
 // Permission is granted to view and run this code.
 // No modifications, alterations, or derivative works are permitted.
 
@@ -9,6 +9,7 @@ const assert = require('node:assert');
 const cheerio = require('cheerio');
 const {
   randomItem,
+  sleep,
   extractCookies,
   isBraveDomain,
   extractUrls,
@@ -19,6 +20,7 @@ const {
 describe('module exports', () => {
   it('exports all expected functions', () => {
     assert.strictEqual(typeof randomItem, 'function');
+    assert.strictEqual(typeof sleep, 'function');
     assert.strictEqual(typeof extractCookies, 'function');
     assert.strictEqual(typeof isBraveDomain, 'function');
     assert.strictEqual(typeof extractUrls, 'function');
@@ -42,6 +44,20 @@ describe('randomItem', () => {
 
   it('handles empty array (returns undefined)', () => {
     assert.strictEqual(randomItem([]), undefined);
+  });
+});
+
+describe('sleep', () => {
+  it('resolves after approximately the given time', async () => {
+    const start = Date.now();
+    await sleep(100);
+    const elapsed = Date.now() - start;
+    assert.ok(elapsed >= 90, `expected >= 90ms, got ${elapsed}ms`);
+  });
+
+  it('resolves with undefined', async () => {
+    const result = await sleep(10);
+    assert.strictEqual(result, undefined);
   });
 });
 

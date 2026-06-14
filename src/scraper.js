@@ -1,5 +1,5 @@
 // Brave Search Scraper — https://github.com/GimiRick/Brave-Search-Scraper
-// License: CC BY-ND 4.0 — see LICENSE file.
+// License: CC BY-NC-ND 4.0 — see LICENSE file.
 // Permission is granted to view and run this code.
 // No modifications, alterations, or derivative works are permitted.
 
@@ -43,7 +43,9 @@ function extractUrls($) {
     const href = $(el).attr('href');
     if (!href || href.startsWith('/') || href.startsWith('#') || /^\s*(?:javascript|data|vbscript):/i.test(href)) return;
     try {
-      if (isBraveDomain(new URL(href).hostname)) return;
+      const parsed = new URL(href);
+      if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return;
+      if (isBraveDomain(parsed.hostname)) return;
     } catch {
       return;
     }
