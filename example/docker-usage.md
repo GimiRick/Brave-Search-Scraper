@@ -26,7 +26,7 @@ The Dockerfile:
 
 - Uses `node:24-alpine` (lightweight, secure)
 - Installs only production dependencies (`npm ci --omit=dev`)
-- Runs as a non-root user (`node` user)
+- Runs as a non-root user (`appuser`)
 - Default command is `node src/scraper.js`
 
 So when you pass a query as the last argument, Docker appends it to the entrypoint, and the scraper picks it up from `process.argv`.
