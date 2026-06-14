@@ -41,7 +41,7 @@ function extractUrls($) {
 
   $('a[href]').each((_, el) => {
     const href = $(el).attr('href');
-    if (!href || href.startsWith('/') || href.startsWith('#') || href.startsWith('javascript:')) return;
+    if (!href || href.startsWith('/') || href.startsWith('#') || /^\s*(?:javascript|data|vbscript):/i.test(href)) return;
     try {
       if (isBraveDomain(new URL(href).hostname)) return;
     } catch {
@@ -54,7 +54,9 @@ function extractUrls($) {
     const url = $(el).attr('data-result-url');
     if (!url) return;
     try {
-      if (!isBraveDomain(new URL(url).hostname)) urls.add(url);
+      const parsed = new URL(url);
+      if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return;
+      if (!isBraveDomain(parsed.hostname)) urls.add(url);
     } catch {
       return;
     }

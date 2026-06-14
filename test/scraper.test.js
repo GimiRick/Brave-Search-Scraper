@@ -142,11 +142,14 @@ describe('extractUrls', () => {
     assert.deepStrictEqual(urls, ['https://brave.com.evil.com/phish']);
   });
 
-  it('filters out relative, hash, and javascript: hrefs', () => {
+  it('filters out relative, hash, and dangerous scheme hrefs', () => {
     const html =
       '<a href="/relative">r</a>' +
       '<a href="#hash">h</a>' +
-      '<a href="javascript:void">j</a>';
+      '<a href="javascript:void">j</a>' +
+      '<a href="JAVASCRIPT:alert(1)">j2</a>' +
+      '<a href="data:text/html,<script>alert(1)</script>">d</a>' +
+      '<a href="vbscript:msgbox(1)">v</a>';
     assert.deepStrictEqual(extractUrls(makeCheerio(html)), []);
   });
 
@@ -170,6 +173,14 @@ describe('extractUrls', () => {
   it('rejects invalid URLs in [data-result-url]', () => {
     const $ = makeCheerio('<div data-result-url="not-a-valid-url">bad</div>');
     assert.deepStrictEqual(extractUrls($), []);
+  });
+
+  it('rejects dangerous schemes in [data-result-url]', () => {
+    const html =
+      '<div data-result-url="javascript:alert(1)">j</div>' +
+      '<div data-result-url="data:text/html,<script>alert(1)</script>">d</div>' +
+      '<div data-result-url="vbscript:msgbox(1)">v</div>';
+    assert.deepStrictEqual(extractUrls(makeCheerio(html)), []);
   });
 
   it('extracts [data-url] with http/https scheme', () => {
