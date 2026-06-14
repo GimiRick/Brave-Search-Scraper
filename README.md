@@ -7,7 +7,7 @@ Brave Search Scraper is a Node.js library for scraping Brave Search, easily. It 
 To install, run the following command:
 
 ```bash
-pip {Coming-soon}
+npm i gimirick-brave-search-scraper
 ```
 
 Or clone and install locally:
