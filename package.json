@@ -1,6 +1,6 @@
 {
   "name": "gimirick-brave-search-scraper",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Server-side scraper that queries Brave Search and extracts URLs",
   "engines": { "node": ">=18.0.0" },
   "main": "src/scraper.js",
