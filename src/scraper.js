@@ -66,9 +66,11 @@ function extractUrls($) {
 
   $('[data-url]').each((_, el) => {
     const url = $(el).attr('data-url');
-    if (!url || !(url.startsWith('http://') || url.startsWith('https://'))) return;
+    if (!url) return;
     try {
-      if (!isBraveDomain(new URL(url).hostname)) urls.add(url);
+      const parsed = new URL(url);
+      if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return;
+      if (!isBraveDomain(parsed.hostname)) urls.add(url);
     } catch {
       return;
     }
