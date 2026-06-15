@@ -2,6 +2,7 @@
   "name": "gimirick-brave-search-scraper",
   "version": "1.0.3",
   "description": "Server-side scraper that queries Brave Search and extracts URLs",
+  "license": "CC-BY-NC-ND-4.0",
   "engines": { "node": ">=20.18.1" },
   "main": "src/scraper.js",
   "bin": {

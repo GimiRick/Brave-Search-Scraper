@@ -121,6 +121,14 @@ describe('isBraveDomain', () => {
       assert.strictEqual(isBraveDomain(domain), false);
     });
   });
+
+  it('handles null hostname without crashing', () => {
+    assert.strictEqual(isBraveDomain(null), false);
+  });
+
+  it('handles undefined hostname without crashing', () => {
+    assert.strictEqual(isBraveDomain(undefined), false);
+  });
 });
 
 describe('extractUrls', () => {
