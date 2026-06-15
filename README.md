@@ -48,16 +48,22 @@ Output is a JSON array of URL strings:
 
 ## CLI Usage
 
-You can also run it directly from the terminal without writing any code:
+After installing globally, run it from anywhere:
 
 ```bash
-node src/scraper.js "your search query"
+brave-search-scraper "your search query"
 ```
 
-Or set the `SEARCH_QUERY` environment variable instead:
+Or use `npx` without installing globally:
 
 ```bash
-SEARCH_QUERY="your search query" node src/scraper.js
+npx brave-search-scraper "your search query"
+```
+
+You can also set the `SEARCH_QUERY` environment variable instead:
+
+```bash
+SEARCH_QUERY="your search query" brave-search-scraper
 ```
 
 ## Additional options
