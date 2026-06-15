@@ -83,7 +83,7 @@ function extractUrls($) {
 }
 
 async function fetchWithRetry(url, params, headers, retries = 3) {
-  for (let attempt = 1; attempt <= retries; attempt++) {
+  for (let attempt = 1; attempt <= retries + 1; attempt++) {
     try {
       const response = await axios.get(url, {
         params,
@@ -94,7 +94,7 @@ async function fetchWithRetry(url, params, headers, retries = 3) {
       });
 
       if (response.status === 429) {
-        if (attempt < retries) {
+        if (attempt <= retries) {
           const wait = Math.min(1000 * Math.pow(2, attempt) + Math.random() * 1000, 15000);
           console.error(`Rate limited (429). Retrying in ${Math.round(wait / 1000)}s... (attempt ${attempt}/${retries})`);
           await sleep(wait);
@@ -104,7 +104,7 @@ async function fetchWithRetry(url, params, headers, retries = 3) {
 
       return response;
     } catch (err) {
-      if (attempt === retries) throw err;
+      if (attempt === retries + 1) throw err;
       const wait = Math.min(1000 * Math.pow(2, attempt) + Math.random() * 1000, 10000);
       console.error(`Request failed (${err.message}). Retrying in ${Math.round(wait / 1000)}s... (attempt ${attempt}/${retries})`);
       await sleep(wait);
