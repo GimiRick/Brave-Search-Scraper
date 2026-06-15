@@ -30,9 +30,19 @@ npm install
 
 To get results for a search query, use the `scrapeBraveSearch` function:
 
+After installing via npm:
+
 ```js
 const { scrapeBraveSearch } = require('gimirick-brave-search-scraper');
+```
 
+From a git clone:
+
+```js
+const { scrapeBraveSearch } = require('./src/scraper');
+```
+
+```js
 const urls = await scrapeBraveSearch('machine learning');
 console.log(urls);
 ```
@@ -60,10 +70,22 @@ Or use `npx` without installing globally:
 npx brave-search-scraper "your search query"
 ```
 
+Run directly from a git clone (after `npm install`):
+
+```bash
+node src/scraper.js "your search query"
+```
+
 You can also set the `SEARCH_QUERY` environment variable instead:
 
 ```bash
 SEARCH_QUERY="your search query" brave-search-scraper
+```
+
+From a git clone:
+
+```bash
+SEARCH_QUERY="your search query" node src/scraper.js
 ```
 
 ## Additional options

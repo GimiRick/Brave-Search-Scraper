@@ -161,7 +161,8 @@ async function main() {
   const query = process.argv[2] || process.env.SEARCH_QUERY;
 
   if (!query) {
-    console.error('Usage: brave-search-scraper "<search-query>"');
+    console.error('Usage: node src/scraper.js "<search-query>"');
+    console.error('   or: brave-search-scraper "<search-query>"  (when installed via npm)');
     console.error('Or set the SEARCH_QUERY environment variable.');
     process.exit(1);
   }

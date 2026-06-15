@@ -6,9 +6,9 @@ Brave blocks automated requests. The scraper handles this with automatic retries
 
 When Brave returns a `429` (Too Many Requests) or the request fails, `fetchWithRetry` waits and tries again:
 
-- **1st retry:** waits ~2 seconds
-- **2nd retry:** waits ~4 seconds  
-- **3rd retry:** waits ~8 seconds
+- **After 1st attempt:** waits ~2 seconds
+- **After 2nd attempt:** waits ~4 seconds  
+- **After 3rd attempt:** waits ~8 seconds (if `retries > 3`)
 
 Each wait has a random jitter so requests don't pile up in sync. Maximum wait is 15 seconds for rate limits, 10 seconds for other errors.
 

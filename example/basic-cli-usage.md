@@ -36,6 +36,7 @@ The scraper prints a usage message and exits:
 
 ```text
 Usage: node src/scraper.js "<search-query>"
+   or: brave-search-scraper "<search-query>"  (when installed via npm)
 Or set the SEARCH_QUERY environment variable.
 ```
 
