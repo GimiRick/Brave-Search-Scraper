@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 // Brave Search Scraper — https://github.com/GimiRick/Brave-Search-Scraper
 // License: CC BY-NC-ND 4.0 — see LICENSE file.
 // Permission is granted to view and run this code.
