@@ -1,27 +1,39 @@
 # Basic CLI Usage
 
-Run the scraper straight from your terminal with a search query:
+## Via npm (global install)
+
+```bash
+brave-search-scraper "what is machine learning"
+```
+
+## Via npx (no install)
+
+```bash
+npx brave-search-scraper "what is machine learning"
+```
+
+## Via git clone
 
 ```bash
 node src/scraper.js "what is machine learning"
 ```
 
-It prints a JSON array of URLs to your terminal:
+All three produce a JSON array of URLs:
 
 ```json
 [
- "https://en.wikipedia.org/wiki/Machine_learning",
- "https://www.ibm.com/topics/machine-learning"
+  "https://en.wikipedia.org/wiki/Machine_learning",
+  "https://www.ibm.com/topics/machine-learning"
 ]
 ```
 
 ## Using an environment variable
 
-If you prefer, set the `SEARCH_QUERY` environment variable instead:
+Set `SEARCH_QUERY` instead of passing the query as an argument:
 
 ```bash
 export SEARCH_QUERY="rust programming"
-node src/scraper.js
+brave-search-scraper
 ```
 
 Or in one line:
@@ -37,6 +49,7 @@ The scraper prints a usage message and exits:
 ```text
 Usage: node src/scraper.js "<search-query>"
    or: brave-search-scraper "<search-query>"  (when installed via npm)
+   or: npx brave-search-scraper "<search-query>"
 Or set the SEARCH_QUERY environment variable.
 ```
 

@@ -2,31 +2,21 @@
 
 You can import the scraper into your own Node.js project instead of using the CLI.
 
-## Install
-
-```bash
-npm install gimirick-brave-search-scraper
-```
-
-If you're using it locally from the repo, just require the path:
-
-```js
-const { scrapeBraveSearch } = require('./src/scraper');
-```
+**Note on imports:** The examples below use `require('gimirick-brave-search-scraper')` (npm install). If you're using a git clone, replace with `require('./src/scraper')`.
 
 ## Basic example
 
 ```js
-const { scrapeBraveSearch } = require('./src/scraper');
+const { scrapeBraveSearch } = require('gimirick-brave-search-scraper');
 
 async function main() {
- try {
- const urls = await scrapeBraveSearch('quantum computing');
- console.log(`Found ${urls.length} results`);
- urls.forEach((url, i) => console.log(`${i + 1}. ${url}`));
- } catch (err) {
- console.error('Scraping failed:', err.message);
- }
+  try {
+    const urls = await scrapeBraveSearch('quantum computing');
+    console.log(`Found ${urls.length} results`);
+    urls.forEach((url, i) => console.log(`${i + 1}. ${url}`));
+  } catch (err) {
+    console.error('Scraping failed:', err.message);
+  }
 }
 
 main();
@@ -35,18 +25,18 @@ main();
 ## Searching multiple queries
 
 ```js
-const { scrapeBraveSearch } = require('./src/scraper');
+const { scrapeBraveSearch } = require('gimirick-brave-search-scraper');
 
 async function searchAll(queries) {
- for (const q of queries) {
- console.log(`\n--- "${q}" ---`);
- try {
- const urls = await scrapeBraveSearch(q);
- console.log(urls.join('\n'));
- } catch (err) {
- console.error(`Failed "${q}":`, err.message);
- }
- }
+  for (const q of queries) {
+    console.log(`\n--- "${q}" ---`);
+    try {
+      const urls = await scrapeBraveSearch(q);
+      console.log(urls.join('\n'));
+    } catch (err) {
+      console.error(`Failed "${q}":`, err.message);
+    }
+  }
 }
 
 searchAll(['node.js tutorial', 'python vs javascript']);

@@ -2,6 +2,8 @@
 
 The scraper filters out Brave-owned domains so you only get external search results. No `brave.com` or `brave.app` URLs in your output.
 
+**Note on imports:** The examples below use `require('gimirick-brave-search-scraper')` (npm install). If you're using a git clone, replace with `require('./src/scraper')`.
+
 ## What gets filtered
 
 These domains are excluded:
@@ -14,7 +16,7 @@ These domains are excluded:
 ## Using isBraveDomain directly
 
 ```js
-const { isBraveDomain } = require('./src/scraper');
+const { isBraveDomain } = require('gimirick-brave-search-scraper');
 
 console.log(isBraveDomain('brave.com'));        // true
 console.log(isBraveDomain('search.brave.com')); // true
@@ -26,7 +28,7 @@ console.log(isBraveDomain('google.com'));       // false
 ## Filter a list of URLs yourself
 
 ```js
-const { isBraveDomain } = require('./src/scraper');
+const { isBraveDomain } = require('gimirick-brave-search-scraper');
 
 const urls = [
   'https://brave.com/download',

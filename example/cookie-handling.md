@@ -2,6 +2,8 @@
 
 Brave Search sets cookies on the homepage that are needed for the actual search request. The scraper handles this automatically, but you can use `extractCookies` yourself if you want more control.
 
+**Note on imports:** The examples below use `require('gimirick-brave-search-scraper')` (npm install). If you're using a git clone, replace with `require('./src/scraper')`.
+
 ## How the default flow works
 
 1. Hit `https://search.brave.com/` to get the homepage
@@ -12,7 +14,7 @@ Brave Search sets cookies on the homepage that are needed for the actual search 
 
 ```js
 const axios = require('axios');
-const { extractCookies } = require('./src/scraper');
+const { extractCookies } = require('gimirick-brave-search-scraper');
 
 async function getCookies() {
   const response = await axios.get('https://search.brave.com/', {

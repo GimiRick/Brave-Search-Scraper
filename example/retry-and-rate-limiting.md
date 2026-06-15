@@ -2,12 +2,14 @@
 
 Brave blocks automated requests. The scraper handles this with automatic retries and exponential backoff.
 
+**Note on imports:** The examples below use `require('gimirick-brave-search-scraper')` (npm install). If you're using a git clone, replace with `require('./src/scraper')`.
+
 ## How it works
 
 When Brave returns a `429` (Too Many Requests) or the request fails, `fetchWithRetry` waits and tries again:
 
 - **After 1st attempt:** waits ~2 seconds
-- **After 2nd attempt:** waits ~4 seconds  
+- **After 2nd attempt:** waits ~4 seconds
 - **After 3rd attempt:** waits ~8 seconds (if `retries > 3`)
 
 Each wait has a random jitter so requests don't pile up in sync. Maximum wait is 15 seconds for rate limits, 10 seconds for other errors.
@@ -15,7 +17,7 @@ Each wait has a random jitter so requests don't pile up in sync. Maximum wait is
 ## Using fetchWithRetry directly
 
 ```js
-const { fetchWithRetry } = require('./src/scraper');
+const { fetchWithRetry } = require('gimirick-brave-search-scraper');
 
 async function example() {
   try {
@@ -37,7 +39,6 @@ async function example() {
 The fourth argument is the number of retries. Default is 3. Bump it up to 5 if you're running on a slow connection or hitting rate limits often:
 
 ```js
-// Try up to 5 times
 const response = await fetchWithRetry(url, params, headers, 5);
 ```
 

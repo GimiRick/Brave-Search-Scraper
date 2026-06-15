@@ -163,6 +163,7 @@ async function main() {
   if (!query) {
     console.error('Usage: node src/scraper.js "<search-query>"');
     console.error('   or: brave-search-scraper "<search-query>"  (when installed via npm)');
+    console.error('   or: npx brave-search-scraper "<search-query>"');
     console.error('Or set the SEARCH_QUERY environment variable.');
     process.exit(1);
   }

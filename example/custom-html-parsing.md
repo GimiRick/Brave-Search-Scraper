@@ -2,11 +2,13 @@
 
 Don't want the scraper to fetch the page for you? Maybe you already have the HTML saved, or you want to parse it differently. Use `extractUrls` directly with your own HTML.
 
+**Note on imports:** The examples below use `require('gimirick-brave-search-scraper')` (npm install). If you're using a git clone, replace with `require('./src/scraper')`.
+
 ## Parse HTML you already fetched
 
 ```js
 const cheerio = require('cheerio');
-const { extractUrls } = require('./src/scraper');
+const { extractUrls } = require('gimirick-brave-search-scraper');
 
 const html = `...some HTML from Brave Search...`;
 const $ = cheerio.load(html);
@@ -20,18 +22,18 @@ console.log(urls);
 ```js
 const axios = require('axios');
 const cheerio = require('cheerio');
-const { extractUrls } = require('./src/scraper');
+const { extractUrls } = require('gimirick-brave-search-scraper');
 
 async function customSearch(query) {
- const response = await axios.get('https://search.brave.com/search', {
- params: { q: query },
- headers: {
- 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
- },
- });
+  const response = await axios.get('https://search.brave.com/search', {
+    params: { q: query },
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+    },
+  });
 
- const $ = cheerio.load(response.data);
- return extractUrls($);
+  const $ = cheerio.load(response.data);
+  return extractUrls($);
 }
 
 customSearch('climate technology').then(urls => console.log(urls));
