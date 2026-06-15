@@ -6,11 +6,16 @@ Brave Search Scraper is a Node.js library for scraping Brave Search, easily. It 
 
 ## npm
 
-Install via npm (globally for CLI, or locally for your project):
+Install globally (CLI use):
 
 ```bash
-npm i -g gimirick-brave-search-scraper   # global (CLI)
-npm i gimirick-brave-search-scraper      # local (programmatic)
+npm i -g gimirick-brave-search-scraper
+```
+
+Install locally (programmatic use):
+
+```bash
+npm i gimirick-brave-search-scraper
 ```
 
 [npm package](https://www.npmjs.com/package/gimirick-brave-search-scraper)
