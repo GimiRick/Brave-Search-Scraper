@@ -96,7 +96,7 @@ async function fetchWithRetry(url, params, headers, retries = 3) {
       if (response.status === 429) {
         if (attempt <= retries) {
           const wait = Math.min(1000 * Math.pow(2, attempt) + Math.random() * 1000, 15000);
-          console.error(`Rate limited (429). Retrying in ${Math.round(wait / 1000)}s... (attempt ${attempt}/${retries})`);
+          console.error(`Rate limited (429). Retrying in ${Math.round(wait / 1000)}s... (attempt ${attempt}/${retries + 1})`);
           await sleep(wait);
         }
         continue;
@@ -106,7 +106,7 @@ async function fetchWithRetry(url, params, headers, retries = 3) {
     } catch (err) {
       if (attempt === retries + 1) throw err;
       const wait = Math.min(1000 * Math.pow(2, attempt) + Math.random() * 1000, 10000);
-      console.error(`Request failed (${err.message}). Retrying in ${Math.round(wait / 1000)}s... (attempt ${attempt}/${retries})`);
+      console.error(`Request failed (${err.message}). Retrying in ${Math.round(wait / 1000)}s... (attempt ${attempt}/${retries + 1})`);
       await sleep(wait);
     }
   }
