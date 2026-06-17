@@ -259,6 +259,37 @@ docker run --rm -e SEARCH_QUERY="your query" brave-scraper
 6. Filters out all Brave-owned domains (`brave.com`, `brave.app` and subdomains).
 7. Deduplicates and returns a clean array of external URLs.
 
+## Architecture
+
+```
+User Input (argv / env)
+       │
+       ▼
+┌──────────────────────────┐
+│    scrapeBraveSearch     │
+│        (query)           │
+│                          │
+│  1. GET homepage         │────► extractCookies()
+│     (collect cookies)    │
+│                          │
+│  2. Sleep 1-3s (jitter)  │────► sleep()
+│                          │
+│  3. GET search           │────► fetchWithRetry()
+│     (UA rotation,        │       └── axios.get()
+│      cookies)            │       └── exponential backoff
+│                          │
+│  4. Parse HTML           │────► cheerio.load()
+│                          │
+│  5. Extract URLs         │────► extractUrls()
+│       ├── a[href]        │       └── isBraveDomain()
+│       ├── [data-         │
+│       │   result-url]    │
+│       └── [data-url]     │
+│                          │
+│  6. Return URLs          │────► JSON array
+└──────────────────────────┘
+```
+
 ---
 
 ## Exit codes (CLI)
