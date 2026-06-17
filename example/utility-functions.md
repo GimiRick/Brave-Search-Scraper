@@ -13,7 +13,7 @@ const { sleep } = require('gimirick-brave-search-scraper');
 
 async function main() {
   console.log('Before sleep');
-  await sleep(2000);  // wait 2 seconds
+  await sleep(2000); // wait 2 seconds
   console.log('After sleep');
 }
 

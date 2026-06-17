@@ -66,10 +66,7 @@ console.log(urls);
 Output:
 
 ```json
-[
-  "https://en.wikipedia.org/wiki/Machine_learning",
-  "https://www.ibm.com/topics/machine-learning"
-]
+["https://en.wikipedia.org/wiki/Machine_learning", "https://www.ibm.com/topics/machine-learning"]
 ```
 
 ### CLI (npm)
@@ -168,7 +165,7 @@ const response = await fetchWithRetry(
   'https://search.brave.com/search',
   { q: 'artificial intelligence' },
   { 'User-Agent': 'Mozilla/5.0 ...' },
-  5
+  5,
 );
 ```
 
@@ -209,7 +206,7 @@ const urls = [
   'https://en.wikipedia.org/wiki/Brave',
 ];
 
-const external = urls.filter(url => !isBraveDomain(new URL(url).hostname));
+const external = urls.filter((url) => !isBraveDomain(new URL(url).hostname));
 ```
 
 ### Throttle requests
@@ -266,10 +263,10 @@ docker run --rm -e SEARCH_QUERY="your query" brave-scraper
 
 ## Exit codes (CLI)
 
-| Code | Meaning |
-| :--- | :--- |
-| `0` | Success: results printed, or empty array `[]` |
-| `1` | Error: no query provided, or scraping failed |
+| Code | Meaning                                       |
+| :--- | :-------------------------------------------- |
+| `0`  | Success: results printed, or empty array `[]` |
+| `1`  | Error: no query provided, or scraping failed  |
 
 ---
 

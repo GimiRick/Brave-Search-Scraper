@@ -56,7 +56,7 @@ const searchResponse = await axios.get('https://search.brave.com/search', {
   params: { q: 'my query' },
   headers: {
     'User-Agent': 'Mozilla/5.0 ...',
-    'Cookie': cookies,
+    Cookie: cookies,
   },
 });
 ```

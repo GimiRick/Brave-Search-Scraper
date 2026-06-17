@@ -36,7 +36,7 @@ async function customSearch(query) {
   return extractUrls($);
 }
 
-customSearch('climate technology').then(urls => console.log(urls));
+customSearch('climate technology').then((urls) => console.log(urls));
 ```
 
 ## How extractUrls works

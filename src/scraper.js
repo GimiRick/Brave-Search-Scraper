@@ -30,13 +30,17 @@ function sleep(ms) {
 function extractCookies(setCookieHeader) {
   if (!setCookieHeader) return '';
   const cookies = Array.isArray(setCookieHeader) ? setCookieHeader : [setCookieHeader];
-  return cookies.map(c => c.split(';')[0]).join('; ');
+  return cookies.map((c) => c.split(';')[0]).join('; ');
 }
 
 function isBraveDomain(hostname) {
   if (!hostname) return false;
-  return hostname === 'brave.com' || hostname === 'brave.app' ||
-    hostname.endsWith('.brave.com') || hostname.endsWith('.brave.app');
+  return (
+    hostname === 'brave.com' ||
+    hostname === 'brave.app' ||
+    hostname.endsWith('.brave.com') ||
+    hostname.endsWith('.brave.app')
+  );
 }
 
 function extractUrls($) {
@@ -44,7 +48,8 @@ function extractUrls($) {
 
   $('a[href]').each((_, el) => {
     const href = $(el).attr('href');
-    if (!href || href.startsWith('/') || href.startsWith('#') || /^\s*(?:javascript|data|vbscript):/i.test(href)) return;
+    if (!href || href.startsWith('/') || href.startsWith('#') || /^\s*(?:javascript|data|vbscript):/i.test(href))
+      return;
     try {
       const parsed = new URL(href);
       if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return;
@@ -96,17 +101,23 @@ async function fetchWithRetry(url, params, headers, retries = 3) {
       if (response.status === 429) {
         if (attempt <= retries) {
           const wait = Math.min(1000 * Math.pow(2, attempt) + Math.random() * 1000, 15000);
-          console.error(`Rate limited (429). Retrying in ${Math.round(wait / 1000)}s... (attempt ${attempt}/${retries + 1})`);
+          console.error(
+            `Rate limited (429). Retrying in ${Math.round(wait / 1000)}s... (attempt ${attempt}/${retries + 1})`,
+          );
           await sleep(wait);
+          continue;
         }
-        continue;
+        console.error(`Rate limited (429) — all ${retries} retries exhausted.`);
+        throw new Error(`Rate limited after ${retries} retries`);
       }
 
       return response;
     } catch (err) {
       if (attempt === retries + 1) throw err;
       const wait = Math.min(1000 * Math.pow(2, attempt) + Math.random() * 1000, 10000);
-      console.error(`Request failed (${err.message}). Retrying in ${Math.round(wait / 1000)}s... (attempt ${attempt}/${retries + 1})`);
+      console.error(
+        `Request failed (${err.message}). Retrying in ${Math.round(wait / 1000)}s... (attempt ${attempt}/${retries + 1})`,
+      );
       await sleep(wait);
     }
   }

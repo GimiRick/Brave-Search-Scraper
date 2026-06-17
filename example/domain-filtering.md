@@ -18,11 +18,11 @@ These domains are excluded:
 ```js
 const { isBraveDomain } = require('gimirick-brave-search-scraper');
 
-console.log(isBraveDomain('brave.com'));        // true
+console.log(isBraveDomain('brave.com')); // true
 console.log(isBraveDomain('search.brave.com')); // true
-console.log(isBraveDomain('brave.app'));        // true
-console.log(isBraveDomain('example.com'));      // false
-console.log(isBraveDomain('google.com'));       // false
+console.log(isBraveDomain('brave.app')); // true
+console.log(isBraveDomain('example.com')); // false
+console.log(isBraveDomain('google.com')); // false
 ```
 
 ## Filter a list of URLs yourself
@@ -37,7 +37,7 @@ const urls = [
   'https://en.wikipedia.org/wiki/Brave',
 ];
 
-const externalUrls = urls.filter(url => !isBraveDomain(new URL(url).hostname));
+const externalUrls = urls.filter((url) => !isBraveDomain(new URL(url).hostname));
 console.log(externalUrls);
 // ['https://example.com/article', 'https://en.wikipedia.org/wiki/Brave']
 ```

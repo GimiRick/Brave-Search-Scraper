@@ -73,10 +73,7 @@ describe('extractCookies', () => {
   });
 
   it('parses array of set-cookie headers', () => {
-    const headers = [
-      'session=abc123; Path=/',
-      'token=xyz; Domain=.example.com',
-    ];
+    const headers = ['session=abc123; Path=/', 'token=xyz; Domain=.example.com'];
     const result = extractCookies(headers);
     assert.strictEqual(result, 'session=abc123; token=xyz');
   });
@@ -189,8 +186,7 @@ describe('extractUrls', () => {
 
   it('filters Brave domains from [data-result-url]', () => {
     const html =
-      '<div data-result-url="https://brave.com/r">b1</div>' +
-      '<div data-result-url="https://brave.app/r">b2</div>';
+      '<div data-result-url="https://brave.com/r">b1</div>' + '<div data-result-url="https://brave.app/r">b2</div>';
     assert.deepStrictEqual(extractUrls(makeCheerio(html)), []);
   });
 
@@ -208,27 +204,18 @@ describe('extractUrls', () => {
   });
 
   it('extracts [data-url] with http/https scheme', () => {
-    const html =
-      '<div data-url="https://example.com/d1">d1</div>' +
-      '<div data-url="http://example.com/d2">d2</div>';
+    const html = '<div data-url="https://example.com/d1">d1</div>' + '<div data-url="http://example.com/d2">d2</div>';
     const urls = extractUrls(makeCheerio(html));
-    assert.deepStrictEqual(urls, [
-      'https://example.com/d1',
-      'http://example.com/d2',
-    ]);
+    assert.deepStrictEqual(urls, ['https://example.com/d1', 'http://example.com/d2']);
   });
 
   it('rejects non-http schemes in [data-url]', () => {
-    const html =
-      '<div data-url="ftp://example.com">f</div>' +
-      '<div data-url="file:///etc/passwd">file</div>';
+    const html = '<div data-url="ftp://example.com">f</div>' + '<div data-url="file:///etc/passwd">file</div>';
     assert.deepStrictEqual(extractUrls(makeCheerio(html)), []);
   });
 
   it('filters Brave domains from [data-url]', () => {
-    const html =
-      '<div data-url="https://brave.com/d">b1</div>' +
-      '<div data-url="http://brave.app/d">b2</div>';
+    const html = '<div data-url="https://brave.com/d">b1</div>' + '<div data-url="http://brave.app/d">b2</div>';
     assert.deepStrictEqual(extractUrls(makeCheerio(html)), []);
   });
 

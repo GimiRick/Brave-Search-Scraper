@@ -21,10 +21,7 @@ node src/scraper.js "what is machine learning"
 All three produce a JSON array of URLs:
 
 ```json
-[
-  "https://en.wikipedia.org/wiki/Machine_learning",
-  "https://www.ibm.com/topics/machine-learning"
-]
+["https://en.wikipedia.org/wiki/Machine_learning", "https://www.ibm.com/topics/machine-learning"]
 ```
 
 ## Using an environment variable

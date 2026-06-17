@@ -25,7 +25,7 @@ async function example() {
       'https://search.brave.com/search',
       { q: 'artificial intelligence' },
       { 'User-Agent': 'Mozilla/5.0 ...' },
-      5  // custom retry count (default is 3)
+      5, // custom retry count (default is 3)
     );
     console.log('Got response:', response.status);
   } catch (err) {
