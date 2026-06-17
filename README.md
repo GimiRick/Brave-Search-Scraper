@@ -1,5 +1,39 @@
 # Brave Search Scraper
 
+<p align="center">
+  <!-- PACKAGE INFO -->
+  <a href="https://www.npmjs.com/package/gimirick-brave-search-scraper"><img src="https://img.shields.io/npm/v/gimirick-brave-search-scraper?logo=npm&logoColor=white" alt="npm version"></a>
+  <a href="package.json"><img src="https://img.shields.io/badge/repo%20version-1.0.4-blue?logo=git&logoColor=white" alt="repo version"></a>
+  <a href="https://www.npmjs.com/package/gimirick-brave-search-scraper"><img src="https://img.shields.io/npm/dm/gimirick-brave-search-scraper?logo=npm&logoColor=white" alt="npm downloads"></a>
+  <a href="https://www.npmjs.com/package/gimirick-brave-search-scraper"><img src="https://img.shields.io/npm/dw/gimirick-brave-search-scraper" alt="npm downloads/week"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC--ND%204.0-lightgrey?logo=creativecommons&logoColor=white" alt="license"></a>
+  <a href="https://semver.org"><img src="https://img.shields.io/badge/semver-2.0.0-blue" alt="semver"></a>
+  <br>
+  <!-- CI / QUALITY -->
+  <a href="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/ci.yml"><img src="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
+  <a href="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/codeql.yml"><img src="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/codeql.yml/badge.svg?branch=main" alt="CodeQL"></a>
+  <a href="test/scraper.test.js"><img src="https://img.shields.io/badge/tests-node%3Atest-brightgreen?logo=node.js&logoColor=white" alt="tests"></a>
+  <a href="SECURITY.md"><img src="https://img.shields.io/badge/security-policy-brightgreen?logo=github&logoColor=white" alt="security"></a>
+  <a href="package.json"><img src="https://img.shields.io/badge/dependencies-2%20direct-brightgreen" alt="dependencies"></a>
+  <br>
+  <!-- REPO METRICS -->
+  <a href="https://github.com/GimiRick/Brave-Search-Scraper/stargazers"><img src="https://img.shields.io/github/stars/GimiRick/Brave-Search-Scraper?logo=github&logoColor=white" alt="stars"></a>
+  <a href="https://github.com/GimiRick/Brave-Search-Scraper/forks"><img src="https://img.shields.io/github/forks/GimiRick/Brave-Search-Scraper?logo=github&logoColor=white" alt="forks"></a>
+  <a href="https://github.com/GimiRick/Brave-Search-Scraper/graphs/contributors"><img src="https://img.shields.io/github/contributors/GimiRick/Brave-Search-Scraper?logo=github&logoColor=white" alt="contributors"></a>
+  <a href="https://github.com/GimiRick/Brave-Search-Scraper/issues"><img src="https://img.shields.io/github/issues/GimiRick/Brave-Search-Scraper?logo=github&logoColor=white" alt="issues"></a>
+  <a href="https://github.com/GimiRick/Brave-Search-Scraper/pulls"><img src="https://img.shields.io/github/issues-pr/GimiRick/Brave-Search-Scraper?logo=github&logoColor=white" alt="pull requests"></a>
+  <a href="https://github.com/GimiRick/Brave-Search-Scraper/commits/main"><img src="https://img.shields.io/github/last-commit/GimiRick/Brave-Search-Scraper?logo=github&logoColor=white" alt="last commit"></a>
+  <br>
+  <!-- PROJECT METADATA -->
+  <a href="package.json"><img src="https://img.shields.io/badge/node-%3E%3D20.18.1-brightgreen?logo=node.js&logoColor=white" alt="node"></a>
+  <a href="Dockerfile"><img src="https://img.shields.io/badge/platform-windows%20%7C%20macos%20%7C%20linux-lightgrey" alt="platform"></a>
+  <a href="src/scraper.js"><img src="https://img.shields.io/badge/bundle%20size-~50%20kB-brightgreen" alt="bundle size"></a>
+  <a href="src/scraper.js"><img src="https://img.shields.io/badge/total%20lines-~1.8k-blue" alt="total lines"></a>
+  <a href="https://github.com/GimiRick/Brave-Search-Scraper/commits/main"><img src="https://img.shields.io/github/commit-activity/m/GimiRick/Brave-Search-Scraper?logo=github&logoColor=white" alt="commit activity"></a>
+  <a href="https://github.com/GimiRick/Brave-Search-Scraper"><img src="https://img.shields.io/github/repo-size/GimiRick/Brave-Search-Scraper?logo=github&logoColor=white" alt="repo size"></a>
+  <a href="https://github.com/GimiRick/Brave-Search-Scraper/graphs/contributors"><img src="https://img.shields.io/badge/maintained-yes-brightgreen" alt="maintained"></a>
+</p>
+
 Brave Search Scraper is a Node.js library for scraping Brave Search, easily. It uses axios and cheerio to fetch and parse Brave Search results, returning a clean array of external URLs.
 
 ---
