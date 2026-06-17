@@ -25,7 +25,7 @@ A clear description of what you expected to happen.
 
 - OS: [e.g. Windows 11, macOS 14, Ubuntu 22.04]
 - Node version: [e.g. 20.18.1]
-- Package version: [e.g. 1.0.4]
+- Package version: [e.g. 1.0.5]
 
 ## Additional context
 

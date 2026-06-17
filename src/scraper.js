@@ -35,11 +35,12 @@ function extractCookies(setCookieHeader) {
 
 function isBraveDomain(hostname) {
   if (!hostname) return false;
+  const h = hostname.toLowerCase();
   return (
-    hostname === 'brave.com' ||
-    hostname === 'brave.app' ||
-    hostname.endsWith('.brave.com') ||
-    hostname.endsWith('.brave.app')
+    h === 'brave.com' ||
+    h === 'brave.app' ||
+    h.endsWith('.brave.com') ||
+    h.endsWith('.brave.app')
   );
 }
 
@@ -102,7 +103,7 @@ async function fetchWithRetry(url, params, headers, retries = 3) {
         if (attempt <= retries) {
           const wait = Math.min(1000 * Math.pow(2, attempt) + Math.random() * 1000, 15000);
           console.error(
-            `Rate limited (429). Retrying in ${Math.round(wait / 1000)}s... (attempt ${attempt}/${retries + 1})`,
+            `Rate limited (429). Retrying in ${Math.round(wait / 1000)}s... (retry ${attempt}/${retries})`,
           );
           await sleep(wait);
           continue;
@@ -116,7 +117,7 @@ async function fetchWithRetry(url, params, headers, retries = 3) {
       if (attempt === retries + 1) throw err;
       const wait = Math.min(1000 * Math.pow(2, attempt) + Math.random() * 1000, 10000);
       console.error(
-        `Request failed (${err.message}). Retrying in ${Math.round(wait / 1000)}s... (attempt ${attempt}/${retries + 1})`,
+        `Request failed (${err.message}). Retrying in ${Math.round(wait / 1000)}s... (retry ${attempt}/${retries})`,
       );
       await sleep(wait);
     }

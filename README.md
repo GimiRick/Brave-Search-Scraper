@@ -3,7 +3,7 @@
 <p align="center">
   <!-- PACKAGE INFO -->
   <a href="https://www.npmjs.com/package/gimirick-brave-search-scraper"><img src="https://img.shields.io/npm/v/gimirick-brave-search-scraper?logo=npm&logoColor=white" alt="npm version"></a>
-  <a href="package.json"><img src="https://img.shields.io/badge/repo%20version-1.0.4-blue?logo=git&logoColor=white" alt="repo version"></a>
+  <a href="package.json"><img src="https://img.shields.io/badge/repo%20version-1.0.5-blue?logo=git&logoColor=white" alt="repo version"></a>
   <a href="https://www.npmjs.com/package/gimirick-brave-search-scraper"><img src="https://img.shields.io/npm/dm/gimirick-brave-search-scraper?logo=npm&logoColor=white" alt="npm downloads"></a>
   <a href="https://www.npmjs.com/package/gimirick-brave-search-scraper"><img src="https://img.shields.io/npm/dw/gimirick-brave-search-scraper" alt="npm downloads/week"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC--ND%204.0-lightgrey?logo=creativecommons&logoColor=white" alt="license"></a>
