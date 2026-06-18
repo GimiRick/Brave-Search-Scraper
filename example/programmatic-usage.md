@@ -110,7 +110,7 @@ Output includes a terminal summary and an `lcov` report under `coverage/`.
 
 ## Semantic release
 
-This project uses [semantic-release](https://semantic-release.gitbook.io/). Releases are automated on push to `main`. Commit messages must follow [Conventional Commits](https://www.conventionalcommits.org/):
+This project uses [semantic-release](https://semantic-release.gitbook.io/) for automated versioning. Releases are triggered manually via GitHub Actions workflow dispatch. Commit messages must follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 | Prefix             | Effect             |
 | :----------------- | :----------------- |

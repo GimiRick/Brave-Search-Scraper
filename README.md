@@ -339,7 +339,7 @@ Tests cover retry paths via a local HTTP server, CLI behavior via child processe
 
 ### Semantic release
 
-This project uses [semantic-release](https://semantic-release.gitbook.io/) for automated versioning, changelog generation, and npm/GitHub releases. A release is triggered on every push to the `main` branch.
+This project uses [semantic-release](https://semantic-release.gitbook.io/) for automated versioning, changelog generation, and npm/GitHub releases. Releases are triggered manually via the GitHub Actions workflow dispatch.
 
 **Commit messages must follow the [Conventional Commits](https://www.conventionalcommits.org/) format:**
 

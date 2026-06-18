@@ -32,7 +32,7 @@ Do not open a public issue. Follow the process described in
 
 ## Commit message conventions (for maintainer)
 
-This project uses [semantic-release](https://semantic-release.gitbook.io/) for automated versioning and publish. Commit messages must follow [Conventional Commits](https://www.conventionalcommits.org/):
+This project uses [semantic-release](https://semantic-release.gitbook.io/) for automated versioning and publish (triggered manually via GitHub Actions). Commit messages must follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 - `fix:` → patch bump (1.0.x)
 - `feat:` → minor bump (1.x.0)
