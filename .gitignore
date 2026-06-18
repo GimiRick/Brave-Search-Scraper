@@ -6,5 +6,7 @@ Thumbs.db
 .idea
 *.log
 .env
+.env.*
 coverage/
 .husky/_
+*.tgz

@@ -12,3 +12,10 @@ eslint.config.js
 node_modules
 *.tgz
 .npmignore
+.env
+.env.*
+.vscode
+.idea
+Thumbs.db
+*.log
+coverage/
