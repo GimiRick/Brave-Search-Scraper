@@ -300,6 +300,7 @@ async function healthCheck() {
   try {
     const start = Date.now();
     const resp = await axios.get('https://search.brave.com/', {
+      headers: { 'User-Agent': randomItem(USER_AGENTS) },
       timeout: 10000,
       validateStatus: () => true,
     });

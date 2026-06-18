@@ -21,7 +21,7 @@ function run(args = []) {
       stderr += d;
     });
     proc.on('error', reject);
-    proc.on('exit', (code) => resolve({ code, stdout, stderr }));
+    proc.on('close', (code) => resolve({ code, stdout, stderr }));
   });
 }
 

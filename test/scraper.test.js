@@ -10,6 +10,7 @@ process.env.NODE_ENV = 'test';
 const { describe, it } = require('node:test');
 const assert = require('node:assert');
 const cheerio = require('cheerio');
+const axios = require('axios');
 const {
   randomItem,
   sleep,
@@ -345,8 +346,12 @@ describe('fetchWithRetry', () => {
       assert.ok(result);
       assert.strictEqual(result.status, 200);
       assert.ok(result.data);
-    } catch {
-      assert.ok(true);
+    } catch (err) {
+      if (err instanceof axios.AxiosError || (err.message && err.message.includes('Rate limited'))) {
+        assert.ok(true);
+      } else {
+        throw err;
+      }
     }
   });
 });
@@ -375,8 +380,12 @@ describe('scrapeBraveSearch', () => {
     try {
       const urls = await scrapeBraveSearch('test');
       assert.ok(Array.isArray(urls));
-    } catch {
-      assert.ok(true);
+    } catch (err) {
+      if (err instanceof axios.AxiosError || (err.message && err.message.includes('Rate limited'))) {
+        assert.ok(true);
+      } else {
+        throw err;
+      }
     }
   });
 
@@ -386,8 +395,12 @@ describe('scrapeBraveSearch', () => {
       if (urls.length > 0) {
         assert.ok(urls.every((u) => typeof u === 'string'));
       }
-    } catch {
-      assert.ok(true);
+    } catch (err) {
+      if (err instanceof axios.AxiosError || (err.message && err.message.includes('Rate limited'))) {
+        assert.ok(true);
+      } else {
+        throw err;
+      }
     }
   });
 
@@ -397,8 +410,12 @@ describe('scrapeBraveSearch', () => {
       assert.ok(Array.isArray(urls));
       const unique = new Set(urls);
       assert.strictEqual(unique.size, urls.length);
-    } catch {
-      assert.ok(true);
+    } catch (err) {
+      if (err instanceof axios.AxiosError || (err.message && err.message.includes('Rate limited'))) {
+        assert.ok(true);
+      } else {
+        throw err;
+      }
     }
   });
 
@@ -406,8 +423,12 @@ describe('scrapeBraveSearch', () => {
     try {
       const urls = await scrapeBraveSearch('test', 0);
       assert.ok(Array.isArray(urls));
-    } catch {
-      assert.ok(true);
+    } catch (err) {
+      if (err instanceof axios.AxiosError || (err.message && err.message.includes('Rate limited'))) {
+        assert.ok(true);
+      } else {
+        throw err;
+      }
     }
   });
 
@@ -415,8 +436,12 @@ describe('scrapeBraveSearch', () => {
     try {
       const urls = await scrapeBraveSearch('test', 10);
       assert.ok(Array.isArray(urls));
-    } catch {
-      assert.ok(true);
+    } catch (err) {
+      if (err instanceof axios.AxiosError || (err.message && err.message.includes('Rate limited'))) {
+        assert.ok(true);
+      } else {
+        throw err;
+      }
     }
   });
 });

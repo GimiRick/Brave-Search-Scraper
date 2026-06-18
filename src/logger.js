@@ -34,6 +34,6 @@ const logger = pino({
   serializers: {
     err: pino.stdSerializers.err,
   },
-});
+}, pino.destination(2));
 
 module.exports = logger;
