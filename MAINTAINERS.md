@@ -60,7 +60,7 @@ CLI args / SEARCH_QUERY env
 ## Development
 
 ```bash
-npm test          # 82 tests (Jest)
+npm test          # 89 tests (node:test)
 npm run lint      # ESLint flat config
 npm run format    # Auto-format all files with Prettier
 node src/scraper.js "query"    # Run directly
@@ -85,7 +85,6 @@ node src/scraper.js --health   # Health check
 ## Publishing
 
 ```bash
-npm run build     # if applicable
 npm publish       # publishes src/, package.json, README.md, LICENSE only
 ```
 

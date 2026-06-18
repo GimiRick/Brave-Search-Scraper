@@ -98,13 +98,13 @@ console.log(result.checks.network.latencyMs);
 
 ## Coverage
 
-The test suite includes **82 tests** across 4 test files. Generate a coverage report:
+The test suite includes **89 tests** across 4 test files. Generate a coverage report:
 
 ```bash
 npm run coverage
 ```
 
-Current coverage: **92.57%** (100% function coverage).
+Current coverage: **93.57%** (100% function coverage).
 
 Output includes a terminal summary and an `lcov` report under `coverage/`.
 
