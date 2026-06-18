@@ -430,18 +430,18 @@ User Input (argv / env)
 │  │      │   result-url]  │
 │  │      └── [data-url]   │
 │  │ 6. Sleep 1-3s         │────► (if more pages)
-│  └─────────────────────── │
-│  7. Deduplicate + Return  │────► logger.info + JSON array
+│  └────────────────────── │
+│  7. Deduplicate + Return │────► logger.info + JSON array
 └──────────────────────────┘
 
 ┌──────────────────────────┐
 │     healthCheck()        │
-│  ┌──────────────────┐    │
-│  │ node version      │    │
-│  │ dependencies      │    │
-│  │ network reachable │    │
-│  └──────────────────┘    │
-│  Returns structured JSON  │
+│  ┌───────────────────┐   │
+│  │ node version      │   │
+│  │ dependencies      │   │
+│  │ network reachable │   │
+│  └───────────────────┘   │
+│  Returns structured JSON │
 └──────────────────────────┘
 ```
 
