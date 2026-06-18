@@ -134,8 +134,9 @@ async function fetchWithRetry(url, params, headers, retries = 3) {
   throw new Error(`Failed after ${retries} retries`);
 }
 
-async function scrapeBraveSearch(query) {
+async function scrapeBraveSearch(query, pages = 1) {
   const validatedQuery = validateSearchQuery(query);
+  const pageCount = Math.max(1, Math.min(5, Math.floor(pages)));
 
   const homeHeaders = {
     'User-Agent': randomItem(USER_AGENTS),
@@ -172,12 +173,22 @@ async function scrapeBraveSearch(query) {
     searchHeaders['Cookie'] = cookieString;
   }
 
-  const response = await fetchWithRetry(BRAVE_SEARCH_URL, { q: validatedQuery }, searchHeaders, 3);
+  const allUrls = new Set();
+  for (let page = 0; page < pageCount; page++) {
+    const params = { q: validatedQuery };
+    if (page > 0) params.offset = page * 10;
 
-  const $ = cheerio.load(response.data);
-  const urls = extractUrls($);
+    const response = await fetchWithRetry(BRAVE_SEARCH_URL, params, searchHeaders, 3);
+    const $ = cheerio.load(response.data);
+    extractUrls($).forEach((u) => allUrls.add(u));
 
-  logger.info({ query: validatedQuery, resultCount: urls.length }, 'Search completed');
+    if (page < pageCount - 1) {
+      await sleep(1000 + Math.random() * 2000);
+    }
+  }
+
+  const urls = [...allUrls];
+  logger.info({ query: validatedQuery, pages: pageCount, resultCount: urls.length }, 'Search completed');
 
   return urls;
 }

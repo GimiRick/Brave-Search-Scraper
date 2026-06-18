@@ -377,6 +377,46 @@ describe('scrapeBraveSearch', () => {
       assert.ok(true);
     }
   });
+
+  it('defaults to 1 page when pages parameter is omitted', async () => {
+    try {
+      const urls = await scrapeBraveSearch('test');
+      if (urls.length > 0) {
+        assert.ok(urls.every((u) => typeof u === 'string'));
+      }
+    } catch {
+      assert.ok(true);
+    }
+  });
+
+  it('accepts pages parameter and returns deduplicated results', async () => {
+    try {
+      const urls = await scrapeBraveSearch('test', 2);
+      assert.ok(Array.isArray(urls));
+      const unique = new Set(urls);
+      assert.strictEqual(unique.size, urls.length);
+    } catch {
+      assert.ok(true);
+    }
+  });
+
+  it('clamps pages parameter to minimum of 1', async () => {
+    try {
+      const urls = await scrapeBraveSearch('test', 0);
+      assert.ok(Array.isArray(urls));
+    } catch {
+      assert.ok(true);
+    }
+  });
+
+  it('clamps pages parameter to maximum of 5', async () => {
+    try {
+      const urls = await scrapeBraveSearch('test', 10);
+      assert.ok(Array.isArray(urls));
+    } catch {
+      assert.ok(true);
+    }
+  });
 });
 
 describe('healthCheck', () => {

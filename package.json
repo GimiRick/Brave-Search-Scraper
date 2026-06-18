@@ -15,6 +15,7 @@
     "start:dev": "node --watch src/scraper.js",
     "test": "node --test",
     "test:watch": "node --test --watch",
+    "coverage": "c8 --reporter=text --reporter=lcov node --test",
     "pretest": "node --check src/scraper.js && node --check src/logger.js",
     "lint": "eslint .",
     "format": "prettier --write ."
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",
+    "c8": "^11.0.0",
     "eslint": "^9.0.0",
     "prettier": "^3.5.0"
   }

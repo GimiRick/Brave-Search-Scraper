@@ -4,6 +4,12 @@ Please include a summary of the change and which issue is fixed.
 
 Fixes #(issue)
 
+**Note:** This project is licensed under CC BY-NC-ND 4.0, which does not
+permit modifications or derivative works. By opening this PR, you
+acknowledge that the maintainer may review your suggestion but cannot
+merge code changes directly. Accepted suggestions will be re-implemented
+by the maintainer.
+
 ## Type of change
 
 - [ ] Bug fix
@@ -16,6 +22,7 @@ Fixes #(issue)
 
 - [ ] `npm test` passes
 - [ ] `npm run lint` passes
+- [ ] `npm run coverage` passes
 
 ## Checklist
 

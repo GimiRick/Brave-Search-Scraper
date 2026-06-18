@@ -1,21 +1,36 @@
 # Contributing to Brave Search Scraper
 
-Thank you for considering contributing. This project is licensed under
-CC BY-NC-ND 4.0, which means you may view and run the code, but no
-modifications, alterations, or derivative works are permitted.
+Thank you for considering contributing. Please read this before opening any
+issues or pull requests.
 
-## How to report issues
+## License notice
+
+This project is licensed under **CC BY-NC-ND 4.0** (Attribution-NonCommercial-
+NoDerivatives). You may view and run the code, but modifications, alterations,
+and derivative works are not permitted. This applies to all contributions.
+
+## How to contribute
+
+Since the license does not permit modifications, the best ways to contribute are:
+
+### Report bugs
 
 Open a [GitHub Issue](https://github.com/GimiRick/Brave-Search-Scraper/issues)
 with a clear title and description. Include steps to reproduce, expected
 behavior, and actual behavior. If applicable, include logs or screenshots.
 
-## Security issues
+### Suggest features
 
-Do not open a public issue. Instead, follow the process described in
+Open a [GitHub Issue](https://github.com/GimiRick/Brave-Search-Scraper/issues)
+with the `enhancement` label. Describe what you need and why. The maintainer
+will review and implement accepted suggestions.
+
+### Security issues
+
+Do not open a public issue. Follow the process described in
 [SECURITY.md](SECURITY.md).
 
-## Development setup
+## Development setup (for running locally)
 
 ```bash
 git clone https://github.com/GimiRick/Brave-Search-Scraper.git
@@ -27,22 +42,16 @@ npm install
 
 ```bash
 npm test
+npm run coverage
 ```
 
 ## Code style
 
-This project uses ESLint and Prettier. Run linting before submitting:
+This project uses ESLint and Prettier:
 
 ```bash
 npm run lint
 npm run format
 ```
-
-## Pull request process
-
-1. Ensure all tests pass (`npm test`).
-2. Run the linter (`npm run lint`).
-3. Update documentation if needed.
-4. Open a pull request against the `main` branch.
 
 Thank you for helping improve this project.
