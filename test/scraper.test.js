@@ -220,7 +220,7 @@ describe('extractUrls', () => {
   it('extracts external a[href] URLs', () => {
     const $ = makeCheerio('<a href="https://example.com">link</a>');
     const urls = extractUrls($);
-    assert.deepStrictEqual(urls, ['https://example.com']);
+    assert.deepStrictEqual(urls, ['https://example.com/']);
   });
 
   it('filters out brave.com a[href]', () => {
@@ -310,7 +310,7 @@ describe('extractUrls', () => {
       '<div data-url="https://example.com">d2</div>';
     const urls = extractUrls(makeCheerio(html));
     assert.strictEqual(urls.length, 1);
-    assert.strictEqual(urls[0], 'https://example.com');
+    assert.strictEqual(urls[0], 'https://example.com/');
   });
 
   it('handles empty HTML gracefully', () => {

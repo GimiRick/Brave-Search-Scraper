@@ -97,43 +97,20 @@ function isBraveDomain(hostname) {
 function extractUrls($) {
   const urls = new Set();
 
-  $('a[href]').each((_, el) => {
-    const href = $(el).attr('href');
-    if (!href || href.startsWith('/') || href.startsWith('#') || /^\s*(?:javascript|data|vbscript):/i.test(href))
-      return;
-    try {
-      const parsed = new URL(href);
-      if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return;
-      if (isBraveDomain(parsed.hostname)) return;
-    } catch {
-      return;
-    }
-    urls.add(href);
-  });
-
-  $('[data-result-url]').each((_, el) => {
-    const url = $(el).attr('data-result-url');
+  const processUrl = (url) => {
     if (!url) return;
     try {
       const parsed = new URL(url);
       if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return;
-      if (!isBraveDomain(parsed.hostname)) urls.add(url);
+      if (!isBraveDomain(parsed.hostname)) urls.add(parsed.href);
     } catch {
       return;
     }
-  });
+  };
 
-  $('[data-url]').each((_, el) => {
-    const url = $(el).attr('data-url');
-    if (!url) return;
-    try {
-      const parsed = new URL(url);
-      if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return;
-      if (!isBraveDomain(parsed.hostname)) urls.add(url);
-    } catch {
-      return;
-    }
-  });
+  $('a[href]').each((_, el) => processUrl($(el).attr('href')));
+  $('[data-result-url]').each((_, el) => processUrl($(el).attr('data-result-url')));
+  $('[data-url]').each((_, el) => processUrl($(el).attr('data-url')));
 
   return [...urls];
 }
@@ -305,11 +282,9 @@ async function healthCheck() {
       validateStatus: () => true,
     });
     checks.network.latencyMs = Date.now() - start;
+    checks.network.detail = `HTTP ${resp.status}`;
     if (resp.status >= 400) {
       checks.network.status = 'degraded';
-      checks.network.detail = `HTTP ${resp.status}`;
-    } else {
-      checks.network.detail = `HTTP ${resp.status}`;
     }
   } catch (err) {
     checks.network.status = 'fail';
