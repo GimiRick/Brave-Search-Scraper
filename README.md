@@ -13,6 +13,7 @@
   <a href="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/ci.yml"><img src="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
   <a href="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/codeql.yml"><img src="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/codeql.yml/badge.svg?branch=main" alt="CodeQL"></a>
   <a href="test/scraper.test.js"><img src="https://img.shields.io/badge/tests-node%3Atest-brightgreen?logo=node.js&logoColor=white" alt="tests"></a>
+  <a href="package.json"><img src="https://img.shields.io/badge/coverage-c8-brightgreen" alt="coverage"></a>
   <a href="SECURITY.md"><img src="https://img.shields.io/badge/security-policy-brightgreen?logo=github&logoColor=white" alt="security"></a>
   <a href="package.json"><img src="https://img.shields.io/badge/dependencies-4%20direct-brightgreen" alt="dependencies"></a>
   <br>
@@ -34,7 +35,7 @@
   <a href="https://github.com/GimiRick/Brave-Search-Scraper/graphs/contributors"><img src="https://img.shields.io/badge/maintained-yes-brightgreen" alt="maintained"></a>
 </p>
 
-Brave Search Scraper is a Node.js library for scraping Brave Search, easily. It uses axios and cheerio to fetch and parse Brave Search results, returning a clean array of external URLs. Features input validation with Zod, structured logging with Pino, and a built-in health check.
+Brave Search Scraper is a Node.js library for scraping Brave Search, easily. It uses axios and cheerio to fetch and parse Brave Search results, returning a clean array of external URLs. Features input validation with Zod, structured logging with Pino, multi-page pagination, and a built-in health check.
 
 ---
 
@@ -305,6 +306,33 @@ console.log(status.checks.node.version);
 console.log(status.checks.dependencies.loaded);
 ```
 
+### Pagination
+
+Scrape multiple pages of results by passing a `pages` argument:
+
+```js
+const { scrapeBraveSearch } = require('gimirick-brave-search-scraper');
+
+// Single page (default):
+const page1 = await scrapeBraveSearch('machine learning');
+
+// Three pages — offset=10 per page, 1–3s delay between pages:
+const pages = await scrapeBraveSearch('machine learning', 3);
+console.log(`Got ${pages.length} results across 3 pages`);
+```
+
+The `pages` parameter is clamped between 1 and 5. URLs are deduplicated across pages.
+
+### Coverage
+
+Generate a test coverage report:
+
+```bash
+npm run coverage
+```
+
+Output includes a terminal summary and an `lcov` report under `coverage/`.
+
 ### Structured logging with Pino
 
 All diagnostic messages are logged as structured JSON to stderr. No more parsing `console.error` output.
@@ -364,9 +392,10 @@ docker run --rm brave-scraper --health
 4. Sends the search request with a rotated User-Agent and the collected cookies.
 5. If Brave returns a `429 Too Many Requests`, waits with exponential backoff and retries (up to 3 times by default).
 6. All retries, warnings, and errors are logged as structured JSON to stderr via Pino.
-7. Parses the HTML with cheerio, extracting URLs from `<a href>`, `[data-result-url]`, and `[data-url]` attributes.
-8. Filters out all Brave-owned domains (`brave.com`, `brave.app` and subdomains).
-9. Deduplicates and returns a clean array of external URLs.
+7. Repeats steps 4–6 for each additional page (if `pages > 1`), with 1–3s delay between pages.
+8. Parses the HTML with cheerio, extracting URLs from `<a href>`, `[data-result-url]`, and `[data-url]` attributes.
+9. Filters out all Brave-owned domains (`brave.com`, `brave.app` and subdomains).
+10. Deduplicates across all pages and returns a clean array of external URLs.
 
 ## Architecture
 
@@ -388,19 +417,21 @@ User Input (argv / env)
 │                          │
 │  2. Sleep 1-3s (jitter)  │────► sleep()
 │                          │
-│  3. GET search           │────► fetchWithRetry()
-│     (UA rotation,        │       └── axios.get()
-│      cookies)            │       └── exponential backoff
-│                          │       └── logger.warn/error (Pino)
-│  4. Parse HTML           │────► cheerio.load()
-│                          │
-│  5. Extract URLs         │────► extractUrls()
-│       ├── a[href]        │       └── isBraveDomain()
-│       ├── [data-         │
-│       │   result-url]    │
-│       └── [data-url]     │
-│                          │
-│  6. Log + Return URLs    │────► logger.info + JSON array
+│  ┌─ Pagination loop ──── │
+│  │ 3. GET search         │────► fetchWithRetry()
+│  │    (UA rotation,      │       └── axios.get()
+│  │     cookies)          │       └── exponential backoff
+│  │                       │       └── logger.warn/error (Pino)
+│  │ 4. Parse HTML         │────► cheerio.load()
+│  │                       │
+│  │ 5. Extract URLs       │────► extractUrls()
+│  │      ├── a[href]      │       └── isBraveDomain()
+│  │      ├── [data-       │
+│  │      │   result-url]  │
+│  │      └── [data-url]   │
+│  │ 6. Sleep 1-3s         │────► (if more pages)
+│  └─────────────────────── │
+│  7. Deduplicate + Return  │────► logger.info + JSON array
 └──────────────────────────┘
 
 ┌──────────────────────────┐
@@ -433,7 +464,7 @@ User Input (argv / env)
 brave-search-scraper/
   src/scraper.js        main scraper (also the module entry point)
   src/logger.js         Pino structured logger setup
-  test/scraper.test.js  unit and integration tests (68 tests)
+  test/scraper.test.js  unit and integration tests (72 tests)
   Dockerfile            production Docker image
   package.json          dependencies and scripts
   example/              usage examples for each feature

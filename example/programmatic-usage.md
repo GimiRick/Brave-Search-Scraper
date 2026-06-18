@@ -68,6 +68,23 @@ validateSearchQuery('machine learning'); // 'machine learning'
 validateSearchQuery('');                 // throws ZodError
 ```
 
+## Pagination
+
+`scrapeBraveSearch` accepts a second argument for the number of result pages:
+
+```js
+const { scrapeBraveSearch } = require('gimirick-brave-search-scraper');
+
+const urls = await scrapeBraveSearch('machine learning', 3);
+console.log(`Found ${urls.length} results across 3 pages`);
+```
+
+- Defaults to `1` (single page, same as before).
+- Clamped between `1` and `5`.
+- Uses `?offset=N` parameter (10 results per page).
+- Adds 1–3s delay between pages to avoid rate limiting.
+- URLs are deduplicated across pages.
+
 ## Health check
 
 ```js
@@ -78,6 +95,16 @@ console.log(result.status); // 'ok', 'degraded', or 'fail'
 console.log(result.checks.dependencies.loaded);
 console.log(result.checks.network.latencyMs);
 ```
+
+## Coverage
+
+Generate a coverage report:
+
+```bash
+npm run coverage
+```
+
+Output includes a terminal summary and an `lcov` report under `coverage/`.
 
 ## What you get back
 
