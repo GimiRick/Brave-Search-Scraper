@@ -9,6 +9,8 @@ CONTRIBUTING.md
 CODE_OF_CONDUCT.md
 eslint.config.js
 .prettierrc
+release.config.js
+.gitignore
 node_modules
 *.tgz
 .npmignore
