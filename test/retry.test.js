@@ -28,9 +28,9 @@ function withServer(behaviors, fn) {
       respond(200)(req, res);
     }
   });
-  server.on('error', () => {});
   server.on('clientError', () => {});
   return new Promise((resolve, reject) => {
+    server.on('error', reject);
     server.listen(0, () => {
       const port = server.address().port;
       fn(port)

@@ -2,7 +2,7 @@
 
 ## Architecture Overview
 
-This is a single-module CLI scraper. The entire scraping pipeline lives in `src/scraper.js` (327 lines). The dependency graph is flat:
+This is a single-module CLI scraper. The entire scraping pipeline lives in `src/scraper.js` (400 lines). The dependency graph is flat:
 
 ```
 src/scraper.js  ──►  src/logger.js
@@ -60,7 +60,7 @@ CLI args / SEARCH_QUERY env
 ## Development
 
 ```bash
-npm test          # 89 tests (node:test)
+npm test          # 82 tests (node:test)
 npm run lint      # ESLint flat config
 npm run format    # Auto-format all files with Prettier
 node src/scraper.js "query"    # Run directly
@@ -81,14 +81,6 @@ node src/scraper.js --health   # Health check
 - No programmatic API other than calling the exported functions directly.
 - Brave Search page structure changes can break `extractUrls()` — the most fragile part of the codebase.
 - No caching layer — each scrape fetches fresh results.
-
-## Publishing
-
-```bash
-npm publish       # publishes src/, package.json, README.md, LICENSE only
-```
-
-See `.npmignore` for the full publish allowlist.
 
 ## License
 

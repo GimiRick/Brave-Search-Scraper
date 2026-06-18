@@ -13,7 +13,6 @@ example/
 .npmignore
 .prettierrc
 eslint.config.js
-release.config.js
 .husky/
 Thumbs.db
 .DS_Store

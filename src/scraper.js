@@ -357,6 +357,7 @@ async function main() {
     console.error('   or: npx brave-search-scraper "<search-query>"');
     console.error('Or set the SEARCH_QUERY environment variable.');
     process.exit(1);
+    return;
   }
 
   try {
@@ -365,6 +366,7 @@ async function main() {
     if (urls.length === 0) {
       console.log('[]');
       process.exit(0);
+      return;
     }
 
     console.log(JSON.stringify(urls, null, 2));
@@ -375,6 +377,7 @@ async function main() {
       logger.error({ err: err.message }, 'Scraping failed');
     }
     process.exit(1);
+    return;
   }
 }
 

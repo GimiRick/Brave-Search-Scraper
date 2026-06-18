@@ -98,7 +98,7 @@ console.log(result.checks.network.latencyMs);
 
 ## Coverage
 
-The test suite includes **89 tests** across 4 test files. Generate a coverage report:
+The test suite includes **82 tests** across 4 test files. Generate a coverage report:
 
 ```bash
 npm run coverage
@@ -107,17 +107,6 @@ npm run coverage
 Current coverage: **93.57%** (100% function coverage).
 
 Output includes a terminal summary and an `lcov` report under `coverage/`.
-
-## Semantic release
-
-This project uses [semantic-release](https://semantic-release.gitbook.io/) for automated versioning. Releases are triggered manually via GitHub Actions workflow dispatch. Commit messages must follow [Conventional Commits](https://www.conventionalcommits.org/):
-
-| Prefix             | Effect             |
-| :----------------- | :----------------- |
-| `fix:`             | Patch bump (1.0.x) |
-| `feat:`            | Minor bump (1.x.0) |
-| `BREAKING CHANGE:` | Major bump (2.0.0) |
-| `docs:`            | No release         |
 
 ## What you get back
 

@@ -12,7 +12,7 @@
   <!-- CI / QUALITY -->
   <a href="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/ci.yml"><img src="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
   <a href="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/codeql.yml"><img src="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/codeql.yml/badge.svg?branch=main" alt="CodeQL"></a>
-  <a href="test/"><img src="https://img.shields.io/badge/tests-89%20node%3Atest-brightgreen?logo=node.js&logoColor=white" alt="tests"></a>
+  <a href="test/"><img src="https://img.shields.io/badge/tests-82%20node%3Atest-brightgreen?logo=node.js&logoColor=white" alt="tests"></a>
   <a href="package.json"><img src="https://img.shields.io/badge/coverage-93.57%25%20c8-brightgreen" alt="coverage"></a>
   <a href="SECURITY.md"><img src="https://img.shields.io/badge/security-policy-brightgreen?logo=github&logoColor=white" alt="security"></a>
   <a href="package.json"><img src="https://img.shields.io/badge/dependencies-4%20direct-brightgreen" alt="dependencies"></a>
@@ -327,7 +327,7 @@ The `pages` parameter is clamped between 1 and 5. URLs are deduplicated across p
 
 ### Coverage
 
-Generate a test coverage report (requires `NODE_ENV` not set to `test`):
+Generate a test coverage report:
 
 ```bash
 npm run coverage
@@ -336,23 +336,6 @@ npm run coverage
 Output includes a terminal summary and an `lcov` report under `coverage/`. Current coverage: **93.57%** (100% function coverage).
 
 Tests cover retry paths via a local HTTP server, CLI behavior via child processes, and the `main()` entry point via in-process mocking of `process.exit`.
-
-### Semantic release
-
-This project uses [semantic-release](https://semantic-release.gitbook.io/) for automated versioning, changelog generation, and npm/GitHub releases. Releases are triggered manually via the GitHub Actions workflow dispatch.
-
-**Commit messages must follow the [Conventional Commits](https://www.conventionalcommits.org/) format:**
-
-| Prefix             | Release effect     |
-| :----------------- | :----------------- |
-| `fix:`             | Patch bump (1.0.x) |
-| `feat:`            | Minor bump (1.x.0) |
-| `BREAKING CHANGE:` | Major bump (2.0.0) |
-| `docs:`            | No release         |
-| `chore:`           | No release         |
-| `test:`            | No release         |
-
-If you're contributing via issues (this project uses CC BY-NC-ND), please reference the Conventional Commits type in your suggestion so the maintainer can write the appropriate commit message.
 
 ### Structured logging with Pino
 
@@ -490,7 +473,7 @@ brave-search-scraper/
     cli.test.js         CLI behavior tests via child process
     main.test.js        main() entry point tests via process mocking
     retry.test.js       fetchWithRetry retry tests via local HTTP server
-  release.config.js     semantic-release configuration
+
   Dockerfile            production Docker image
   package.json          dependencies and scripts
   example/              usage examples for each feature
