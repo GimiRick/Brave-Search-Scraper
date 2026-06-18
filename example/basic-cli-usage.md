@@ -58,7 +58,7 @@ Output:
 ```json
 {
   "status": "ok",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "timestamp": "2026-06-18T11:11:01.244Z",
   "checks": {
     "node": { "status": "ok", "version": "v24.15.0", "minRequired": ">=20.18.1" },
