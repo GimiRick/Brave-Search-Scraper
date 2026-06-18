@@ -65,6 +65,7 @@ npm run lint      # ESLint flat config
 npm run format    # Auto-format all files with Prettier
 node src/scraper.js "query"    # Run directly
 node src/scraper.js --health   # Health check
+node src/scraper.js --version  # Print version
 ```
 
 ## Design Decisions

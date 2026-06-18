@@ -308,6 +308,20 @@ console.log(status.checks.node.version);
 console.log(status.checks.dependencies.loaded);
 ```
 
+### Version check
+
+Print the installed version:
+
+```bash
+brave-search-scraper --version
+# or via git clone:
+node src/scraper.js --version
+```
+
+Output: `1.1.3`
+
+Exit code: `0`.
+
 ### Pagination
 
 Scrape multiple pages of results by passing a `pages` argument:
@@ -380,10 +394,11 @@ With an environment variable:
 docker run --rm -e SEARCH_QUERY="your query" brave-scraper
 ```
 
-Docker also supports the health check:
+Docker also supports the health check and version flag:
 
 ```bash
 docker run --rm brave-scraper --health
+docker run --rm brave-scraper --version
 ```
 
 ---
@@ -457,6 +472,7 @@ User Input (argv / env)
 | :--- | :-------------------------------------------- |
 | `0`  | Success: results printed, or empty array `[]` |
 | `0`  | Health check passed (`--health` flag)         |
+| `0`  | Version printed (`--version` flag)            |
 | `1`  | Error: no query provided, or scraping failed  |
 | `1`  | Health check failed (`--health` flag)         |
 

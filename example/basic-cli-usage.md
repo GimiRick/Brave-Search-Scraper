@@ -68,6 +68,18 @@ Output:
 }
 ```
 
+## Version check
+
+Print the installed version:
+
+```bash
+brave-search-scraper --version
+# or via git clone:
+node src/scraper.js --version
+```
+
+Output: `1.1.3`
+
 ## Using the `main()` function programmatically
 
 The `main` entry point is also exported for programmatic use (e.g., for custom CLI wrappers):
@@ -77,6 +89,13 @@ const { main } = require('gimirick-brave-search-scraper');
 
 process.argv = ['node', 'wrapper.js', '--health'];
 await main(); // runs the health check and exits
+```
+
+You can also check the version programmatically:
+
+```js
+process.argv = ['node', 'wrapper.js', '--version'];
+await main(); // prints the version and exits
 ```
 
 ## What happens if you don't provide a query
@@ -94,4 +113,5 @@ Or set the SEARCH_QUERY environment variable.
 
 - `0`: success (results printed, or empty array `[]`)
 - `0`: health check passed (`--health` flag)
+- `0`: version printed (`--version` flag)
 - `1`: error (no query given, scraping failed, or health check failed)
