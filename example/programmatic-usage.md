@@ -98,7 +98,7 @@ console.log(result.checks.network.latencyMs);
 
 ## Coverage
 
-The test suite includes **82 tests** across 4 test files. Generate a coverage report:
+The test suite includes **84 tests** across 4 test files. Generate a coverage report:
 
 ```bash
 npm run coverage

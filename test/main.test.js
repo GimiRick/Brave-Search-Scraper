@@ -27,6 +27,11 @@ describe('main', () => {
     await main();
   });
 
+  it('handles --version flag', async () => {
+    process.argv = ['node', 'scraper.js', '--version'];
+    await main();
+  });
+
   it('handles --health flag', async () => {
     process.argv = ['node', 'scraper.js', '--health'];
     await main();

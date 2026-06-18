@@ -53,4 +53,10 @@ describe('CLI', () => {
     const { code } = await run(['']);
     assert.strictEqual(code, 1);
   });
+
+  it('--version outputs the current version and exits 0', async () => {
+    const { code, stdout } = await run(['--version']);
+    assert.strictEqual(code, 0);
+    assert.match(stdout, /^\d+\.\d+\.\d+/);
+  });
 });

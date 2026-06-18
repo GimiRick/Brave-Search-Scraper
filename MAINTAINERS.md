@@ -2,7 +2,7 @@
 
 ## Architecture Overview
 
-This is a single-module CLI scraper. The entire scraping pipeline lives in `src/scraper.js` (400 lines). The dependency graph is flat:
+This is a single-module CLI scraper. The entire scraping pipeline lives in `src/scraper.js` (407 lines). The dependency graph is flat:
 
 ```
 src/scraper.js  ──►  src/logger.js
@@ -60,7 +60,7 @@ CLI args / SEARCH_QUERY env
 ## Development
 
 ```bash
-npm test          # 82 tests (node:test)
+npm test          # 84 tests (node:test)
 npm run lint      # ESLint flat config
 npm run format    # Auto-format all files with Prettier
 node src/scraper.js "query"    # Run directly

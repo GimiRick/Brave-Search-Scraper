@@ -331,11 +331,18 @@ async function healthCheck() {
 
 /**
  * CLI entry point. Parses command-line arguments or environment variables
- * and runs either a health check or a search scrape.
- * Supports `--health` flag, direct query argument, and `SEARCH_QUERY` env var.
+ * and runs either a health check, version output, or a search scrape.
+ * Supports `--health`, `--version` flags, direct query argument, and `SEARCH_QUERY` env var.
  * @returns {Promise<void>}
  */
 async function main() {
+  if (process.argv.includes('--version')) {
+    const pkg = require('../package.json');
+    console.log(pkg.version);
+    process.exit(0);
+    return;
+  }
+
   if (process.argv.includes('--health')) {
     try {
       const result = await healthCheck();
