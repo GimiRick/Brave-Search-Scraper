@@ -21,10 +21,14 @@ const USER_AGENTS = [
   'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
 ];
 
-const searchQuerySchema = z.string({
-  required_error: 'Search query is required',
-  invalid_type_error: 'Search query must be a string',
-}).trim().min(1, 'Search query cannot be empty').max(500, 'Search query is too long');
+const searchQuerySchema = z
+  .string({
+    required_error: 'Search query is required',
+    invalid_type_error: 'Search query must be a string',
+  })
+  .trim()
+  .min(1, 'Search query cannot be empty')
+  .max(500, 'Search query is too long');
 
 function validateSearchQuery(query) {
   return searchQuerySchema.parse(query);
@@ -47,12 +51,7 @@ function extractCookies(setCookieHeader) {
 function isBraveDomain(hostname) {
   if (!hostname) return false;
   const h = hostname.toLowerCase();
-  return (
-    h === 'brave.com' ||
-    h === 'brave.app' ||
-    h.endsWith('.brave.com') ||
-    h.endsWith('.brave.app')
-  );
+  return h === 'brave.com' || h === 'brave.app' || h.endsWith('.brave.com') || h.endsWith('.brave.app');
 }
 
 function extractUrls($) {
@@ -113,8 +112,10 @@ async function fetchWithRetry(url, params, headers, retries = 3) {
       if (response.status === 429) {
         if (attempt <= retries) {
           const wait = Math.min(1000 * Math.pow(2, attempt) + Math.random() * 1000, 15000);
-          logger.warn({ retry: attempt, maxRetries: retries, waitMs: Math.round(wait) },
-            `Rate limited (429). Retrying in ${Math.round(wait / 1000)}s...`);
+          logger.warn(
+            { retry: attempt, maxRetries: retries, waitMs: Math.round(wait) },
+            `Rate limited (429). Retrying in ${Math.round(wait / 1000)}s...`,
+          );
           await sleep(wait);
           continue;
         }
@@ -126,12 +127,13 @@ async function fetchWithRetry(url, params, headers, retries = 3) {
     } catch (err) {
       if (attempt === retries + 1) throw err;
       const wait = Math.min(1000 * Math.pow(2, attempt) + Math.random() * 1000, 10000);
-      logger.warn({ retry: attempt, maxRetries: retries, waitMs: Math.round(wait), err: err.message },
-        `Request failed. Retrying in ${Math.round(wait / 1000)}s...`);
+      logger.warn(
+        { retry: attempt, maxRetries: retries, waitMs: Math.round(wait), err: err.message },
+        `Request failed. Retrying in ${Math.round(wait / 1000)}s...`,
+      );
       await sleep(wait);
     }
   }
-  throw new Error(`Failed after ${retries} retries`);
 }
 
 async function scrapeBraveSearch(query, pages = 1) {
@@ -251,10 +253,12 @@ async function healthCheck() {
   }
 
   const allOk = Object.values(checks).every((c) => c.status === 'ok');
-  const degraded = Object.values(checks).some((c) => c.status === 'degraded') && !Object.values(checks).some((c) => c.status === 'fail');
+  const degraded =
+    Object.values(checks).some((c) => c.status === 'degraded') &&
+    !Object.values(checks).some((c) => c.status === 'fail');
 
   return {
-    status: allOk ? 'ok' : (degraded ? 'degraded' : 'fail'),
+    status: allOk ? 'ok' : degraded ? 'degraded' : 'fail',
     version: pkg.version,
     timestamp: new Date().toISOString(),
     checks,
@@ -314,6 +318,7 @@ module.exports = {
   extractUrls,
   fetchWithRetry,
   scrapeBraveSearch,
+  main,
   validateSearchQuery,
   searchQuerySchema,
   healthCheck,

@@ -12,8 +12,8 @@
   <!-- CI / QUALITY -->
   <a href="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/ci.yml"><img src="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
   <a href="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/codeql.yml"><img src="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/codeql.yml/badge.svg?branch=main" alt="CodeQL"></a>
-  <a href="test/scraper.test.js"><img src="https://img.shields.io/badge/tests-node%3Atest-brightgreen?logo=node.js&logoColor=white" alt="tests"></a>
-  <a href="package.json"><img src="https://img.shields.io/badge/coverage-c8-brightgreen" alt="coverage"></a>
+  <a href="test/"><img src="https://img.shields.io/badge/tests-82%20node%3Atest-brightgreen?logo=node.js&logoColor=white" alt="tests"></a>
+  <a href="package.json"><img src="https://img.shields.io/badge/coverage-92.57%25%20c8-brightgreen" alt="coverage"></a>
   <a href="SECURITY.md"><img src="https://img.shields.io/badge/security-policy-brightgreen?logo=github&logoColor=white" alt="security"></a>
   <a href="package.json"><img src="https://img.shields.io/badge/dependencies-4%20direct-brightgreen" alt="dependencies"></a>
   <br>
@@ -138,6 +138,7 @@ const {
   isBraveDomain,
   randomItem,
   sleep,
+  main,
   validateSearchQuery,
   healthCheck,
 } = require('gimirick-brave-search-scraper');
@@ -168,7 +169,7 @@ const response = await fetchWithRetry(
   'https://search.brave.com/search',
   { q: 'artificial intelligence' },
   { 'User-Agent': 'Mozilla/5.0 ...' },
-  5,
+  5
 );
 ```
 
@@ -240,11 +241,11 @@ const agent = randomItem(agents);
 ```js
 const { scrapeBraveSearch } = require('gimirick-brave-search-scraper');
 
-await scrapeBraveSearch('');       // throws ZodError — empty
-await scrapeBraveSearch('   ');    // throws ZodError — only whitespace
-await scrapeBraveSearch(null);     // throws ZodError — not a string
-await scrapeBraveSearch(42);       // throws ZodError — not a string
-await scrapeBraveSearch('hello');  // ✅ passes, returns trimmed 'hello'
+await scrapeBraveSearch(''); // throws ZodError — empty
+await scrapeBraveSearch('   '); // throws ZodError — only whitespace
+await scrapeBraveSearch(null); // throws ZodError — not a string
+await scrapeBraveSearch(42); // throws ZodError — not a string
+await scrapeBraveSearch('hello'); // ✅ passes, returns trimmed 'hello'
 ```
 
 The schema is configurable. Access it directly:
@@ -262,6 +263,7 @@ if (!result.success) {
 ```
 
 Rules:
+
 - Must be a string (not null, undefined, number, object, array)
 - Must be non-empty after trimming whitespace
 - Maximum 500 characters
@@ -286,9 +288,9 @@ Output:
   "version": "1.0.5",
   "timestamp": "2026-06-18T11:11:01.244Z",
   "checks": {
-    "node":        { "status": "ok", "version": "v24.15.0", "minRequired": ">=20.18.1" },
-    "dependencies": { "status": "ok", "loaded": ["axios","cheerio","zod","pino"], "missing": [] },
-    "network":     { "status": "ok", "reachable": true, "latencyMs": 128, "detail": "HTTP 200" }
+    "node": { "status": "ok", "version": "v24.15.0", "minRequired": ">=20.18.1" },
+    "dependencies": { "status": "ok", "loaded": ["axios", "cheerio", "zod", "pino"], "missing": [] },
+    "network": { "status": "ok", "reachable": true, "latencyMs": 128, "detail": "HTTP 200" }
   }
 }
 ```
@@ -301,7 +303,7 @@ Exit codes: `0` if all checks pass, `1` if any check fails.
 const { healthCheck } = require('gimirick-brave-search-scraper');
 
 const status = await healthCheck();
-console.log(status.status);    // 'ok' | 'degraded' | 'fail'
+console.log(status.status); // 'ok' | 'degraded' | 'fail'
 console.log(status.checks.node.version);
 console.log(status.checks.dependencies.loaded);
 ```
@@ -325,13 +327,32 @@ The `pages` parameter is clamped between 1 and 5. URLs are deduplicated across p
 
 ### Coverage
 
-Generate a test coverage report:
+Generate a test coverage report (requires `NODE_ENV` not set to `test`):
 
 ```bash
 npm run coverage
 ```
 
-Output includes a terminal summary and an `lcov` report under `coverage/`.
+Output includes a terminal summary and an `lcov` report under `coverage/`. Current coverage: **92.57%** (100% function coverage).
+
+Tests cover retry paths via a local HTTP server, CLI behavior via child processes, and the `main()` entry point via in-process mocking of `process.exit`.
+
+### Semantic release
+
+This project uses [semantic-release](https://semantic-release.gitbook.io/) for automated versioning, changelog generation, and npm/GitHub releases. A release is triggered on every push to the `main` branch.
+
+**Commit messages must follow the [Conventional Commits](https://www.conventionalcommits.org/) format:**
+
+| Prefix             | Release effect     |
+| :----------------- | :----------------- |
+| `fix:`             | Patch bump (1.0.x) |
+| `feat:`            | Minor bump (1.x.0) |
+| `BREAKING CHANGE:` | Major bump (2.0.0) |
+| `docs:`            | No release         |
+| `chore:`           | No release         |
+| `test:`            | No release         |
+
+If you're contributing via issues (this project uses CC BY-NC-ND), please reference the Conventional Commits type in your suggestion so the maintainer can write the appropriate commit message.
 
 ### Structured logging with Pino
 
@@ -464,7 +485,12 @@ User Input (argv / env)
 brave-search-scraper/
   src/scraper.js        main scraper (also the module entry point)
   src/logger.js         Pino structured logger setup
-  test/scraper.test.js  unit and integration tests (72 tests)
+  test/
+    scraper.test.js     core unit and integration tests
+    cli.test.js         CLI behavior tests via child process
+    main.test.js        main() entry point tests via process mocking
+    retry.test.js       fetchWithRetry retry tests via local HTTP server
+  release.config.js     semantic-release configuration
   Dockerfile            production Docker image
   package.json          dependencies and scripts
   example/              usage examples for each feature

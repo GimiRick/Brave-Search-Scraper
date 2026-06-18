@@ -18,6 +18,7 @@ const {
   extractUrls,
   fetchWithRetry,
   scrapeBraveSearch,
+  main,
   validateSearchQuery,
   searchQuerySchema,
   healthCheck,
@@ -32,6 +33,7 @@ describe('module exports', () => {
     assert.strictEqual(typeof extractUrls, 'function');
     assert.strictEqual(typeof fetchWithRetry, 'function');
     assert.strictEqual(typeof scrapeBraveSearch, 'function');
+    assert.strictEqual(typeof main, 'function');
     assert.strictEqual(typeof validateSearchQuery, 'function');
     assert.strictEqual(typeof healthCheck, 'function');
   });

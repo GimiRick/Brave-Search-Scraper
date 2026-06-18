@@ -30,6 +30,15 @@ will review and implement accepted suggestions.
 Do not open a public issue. Follow the process described in
 [SECURITY.md](SECURITY.md).
 
+## Commit message conventions (for maintainer)
+
+This project uses [semantic-release](https://semantic-release.gitbook.io/) for automated versioning and publish. Commit messages must follow [Conventional Commits](https://www.conventionalcommits.org/):
+
+- `fix:` → patch bump (1.0.x)
+- `feat:` → minor bump (1.x.0)
+- `BREAKING CHANGE:` → major bump (2.0.0)
+- `docs:`, `chore:`, `test:` → no release
+
 ## Development setup (for running locally)
 
 ```bash

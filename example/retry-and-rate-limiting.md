@@ -25,7 +25,7 @@ async function example() {
       'https://search.brave.com/search',
       { q: 'artificial intelligence' },
       { 'User-Agent': 'Mozilla/5.0 ...' },
-      5, // custom retry count (default is 3)
+      5 // custom retry count (default is 3)
     );
     console.log('Got response:', response.status);
   } catch (err) {
@@ -44,11 +44,24 @@ const response = await fetchWithRetry(url, params, headers, 5);
 
 ## What gets printed during retries
 
-The scraper logs to stderr so it doesn't interfere with the JSON output:
+The scraper logs structured JSON to stderr so it doesn't interfere with the JSON output:
 
-```bash
-Rate limited (429). Retrying in 2s... (attempt 1/3)
-Request failed (socket hang up). Retrying in 4s... (attempt 2/3)
+```json
+{"level":"warn","retry":1,"maxRetries":3,"waitMs":2033,"msg":"Rate limited (429). Retrying in 2s..."}
+{"level":"warn","retry":1,"maxRetries":3,"waitMs":2499,"err":"socket hang up","msg":"Request failed. Retrying in 2s..."}
+{"level":"error","retries":3,"msg":"Rate limited (429) — all retries exhausted."}
+{"level":"error","retries":3,"msg":"Failed after 3 retries"}
 ```
 
-If all retries are exhausted, it throws an error with the message `"Failed after N retries"`.
+If all retries are exhausted, the function throws an error with the message `"Failed after N retries"` (network errors) or `"Rate limited after N retries"` (429).
+
+## Test coverage for retry paths
+
+The retry logic is tested using a local HTTP server that returns controlled responses:
+
+- **429 → success after 2 retries** — server returns 429, 429, 200
+- **429 exhausted** — server returns 4× 429, asserts `Rate limited after 3 retries`
+- **Socket error → success** — server destroys socket twice then returns 200
+- **Socket error exhausted** — server destroys socket 4×, asserts error thrown
+
+All tests run in `test/retry.test.js` using Node's built-in `http` module — zero external dependencies.

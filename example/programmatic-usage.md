@@ -7,7 +7,7 @@ You can import the scraper into your own Node.js project instead of using the CL
 ## Basic example
 
 ```js
-const { scrapeBraveSearch } = require('gimirick-brave-search-scraper');
+const { scrapeBraveSearch, healthCheck } = require('gimirick-brave-search-scraper');
 
 async function main() {
   try {
@@ -50,10 +50,10 @@ searchAll(['node.js tutorial', 'python vs javascript']);
 const { scrapeBraveSearch, validateSearchQuery } = require('gimirick-brave-search-scraper');
 
 // These throw ZodError synchronously (no network call made):
-await scrapeBraveSearch('');       // empty
-await scrapeBraveSearch('   ');    // whitespace only
-await scrapeBraveSearch(null);     // not a string
-await scrapeBraveSearch(42);       // not a string
+await scrapeBraveSearch(''); // empty
+await scrapeBraveSearch('   '); // whitespace only
+await scrapeBraveSearch(null); // not a string
+await scrapeBraveSearch(42); // not a string
 
 // This passes — query is trimmed:
 await scrapeBraveSearch('  hello  '); // sends "hello"
@@ -65,7 +65,7 @@ Use `validateSearchQuery` directly:
 const { validateSearchQuery } = require('gimirick-brave-search-scraper');
 
 validateSearchQuery('machine learning'); // 'machine learning'
-validateSearchQuery('');                 // throws ZodError
+validateSearchQuery(''); // throws ZodError
 ```
 
 ## Pagination
@@ -98,13 +98,26 @@ console.log(result.checks.network.latencyMs);
 
 ## Coverage
 
-Generate a coverage report:
+The test suite includes **82 tests** across 4 test files. Generate a coverage report:
 
 ```bash
 npm run coverage
 ```
 
+Current coverage: **92.57%** (100% function coverage).
+
 Output includes a terminal summary and an `lcov` report under `coverage/`.
+
+## Semantic release
+
+This project uses [semantic-release](https://semantic-release.gitbook.io/). Releases are automated on push to `main`. Commit messages must follow [Conventional Commits](https://www.conventionalcommits.org/):
+
+| Prefix             | Effect             |
+| :----------------- | :----------------- |
+| `fix:`             | Patch bump (1.0.x) |
+| `feat:`            | Minor bump (1.x.0) |
+| `BREAKING CHANGE:` | Major bump (2.0.0) |
+| `docs:`            | No release         |
 
 ## What you get back
 

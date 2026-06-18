@@ -61,11 +61,22 @@ Output:
   "version": "1.0.5",
   "timestamp": "2026-06-18T11:11:01.244Z",
   "checks": {
-    "node":        { "status": "ok", "version": "v24.15.0", "minRequired": ">=20.18.1" },
-    "dependencies": { "status": "ok", "loaded": ["axios","cheerio","zod","pino"], "missing": [] },
-    "network":     { "status": "ok", "reachable": true, "latencyMs": 128, "detail": "HTTP 200" }
+    "node": { "status": "ok", "version": "v24.15.0", "minRequired": ">=20.18.1" },
+    "dependencies": { "status": "ok", "loaded": ["axios", "cheerio", "zod", "pino"], "missing": [] },
+    "network": { "status": "ok", "reachable": true, "latencyMs": 128, "detail": "HTTP 200" }
   }
 }
+```
+
+## Using the `main()` function programmatically
+
+The `main` entry point is also exported for programmatic use (e.g., for custom CLI wrappers):
+
+```js
+const { main } = require('gimirick-brave-search-scraper');
+
+process.argv = ['node', 'wrapper.js', '--health'];
+await main(); // runs the health check and exits
 ```
 
 ## What happens if you don't provide a query
