@@ -1,5 +1,7 @@
 'use strict';
 
+process.env.NODE_ENV = 'test';
+
 const { describe, it, beforeEach, afterEach } = require('node:test');
 const { main } = require('../src/scraper.js');
 
@@ -19,7 +21,11 @@ describe('main', () => {
   afterEach(() => {
     process.argv = origArgv;
     process.exit = origExit;
-    process.env.SEARCH_QUERY = origSearchQuery;
+    if (origSearchQuery === undefined) {
+      delete process.env.SEARCH_QUERY;
+    } else {
+      process.env.SEARCH_QUERY = origSearchQuery;
+    }
   });
 
   it('shows usage and exits when no query is provided', async () => {
