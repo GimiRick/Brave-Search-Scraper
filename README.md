@@ -13,7 +13,7 @@
   <a href="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/ci.yml"><img src="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
   <a href="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/codeql.yml"><img src="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/codeql.yml/badge.svg?branch=main" alt="CodeQL"></a>
   <a href="test/"><img src="https://img.shields.io/badge/tests-82%20node%3Atest-brightgreen?logo=node.js&logoColor=white" alt="tests"></a>
-  <a href="package.json"><img src="https://img.shields.io/badge/coverage-92.57%25%20c8-brightgreen" alt="coverage"></a>
+  <a href="package.json"><img src="https://img.shields.io/badge/coverage-93.57%25%20c8-brightgreen" alt="coverage"></a>
   <a href="SECURITY.md"><img src="https://img.shields.io/badge/security-policy-brightgreen?logo=github&logoColor=white" alt="security"></a>
   <a href="package.json"><img src="https://img.shields.io/badge/dependencies-4%20direct-brightgreen" alt="dependencies"></a>
   <br>
@@ -333,7 +333,7 @@ Generate a test coverage report (requires `NODE_ENV` not set to `test`):
 npm run coverage
 ```
 
-Output includes a terminal summary and an `lcov` report under `coverage/`. Current coverage: **92.57%** (100% function coverage).
+Output includes a terminal summary and an `lcov` report under `coverage/`. Current coverage: **93.57%** (100% function coverage).
 
 Tests cover retry paths via a local HTTP server, CLI behavior via child processes, and the `main()` entry point via in-process mocking of `process.exit`.
 
