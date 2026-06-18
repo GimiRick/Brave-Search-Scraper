@@ -28,7 +28,7 @@
   <!-- PROJECT METADATA -->
   <a href="package.json"><img src="https://img.shields.io/badge/node-%3E%3D20.18.1-brightgreen?logo=node.js&logoColor=white" alt="node"></a>
   <a href="Dockerfile"><img src="https://img.shields.io/badge/platform-windows%20%7C%20macos%20%7C%20linux-lightgrey" alt="platform"></a>
-  <a href="src/scraper.js"><img src="https://img.shields.io/badge/bundle%20size-~50%20kB-brightgreen" alt="bundle size"></a>
+  <a href="src/"><img src="https://img.shields.io/badge/bundle%20size-~13%20kB-brightgreen" alt="bundle size"></a>
   <a href="src/scraper.js"><img src="https://img.shields.io/badge/total%20lines-~1.8k-blue" alt="total lines"></a>
   <a href="https://github.com/GimiRick/Brave-Search-Scraper/commits/main"><img src="https://img.shields.io/github/commit-activity/m/GimiRick/Brave-Search-Scraper?logo=github&logoColor=white" alt="commit activity"></a>
   <a href="https://github.com/GimiRick/Brave-Search-Scraper"><img src="https://img.shields.io/github/repo-size/GimiRick/Brave-Search-Scraper?logo=github&logoColor=white" alt="repo size"></a>

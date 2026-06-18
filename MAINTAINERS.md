@@ -2,7 +2,7 @@
 
 ## Architecture Overview
 
-This is a single-module CLI scraper. The entire scraping pipeline lives in `src/scraper.js` (407 lines). The dependency graph is flat:
+This is a single-module CLI scraper. The entire scraping pipeline lives in `src/scraper.js` (383 lines). The dependency graph is flat:
 
 ```
 src/scraper.js  ──►  src/logger.js
