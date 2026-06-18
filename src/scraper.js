@@ -114,7 +114,7 @@ async function fetchWithRetry(url, params, headers, retries = 3) {
           const wait = Math.min(1000 * Math.pow(2, attempt) + Math.random() * 1000, 15000);
           logger.warn(
             { retry: attempt, maxRetries: retries, waitMs: Math.round(wait) },
-            `Rate limited (429). Retrying in ${Math.round(wait / 1000)}s...`,
+            `Rate limited (429). Retrying in ${Math.round(wait / 1000)}s...`
           );
           await sleep(wait);
           continue;
@@ -129,7 +129,7 @@ async function fetchWithRetry(url, params, headers, retries = 3) {
       const wait = Math.min(1000 * Math.pow(2, attempt) + Math.random() * 1000, 10000);
       logger.warn(
         { retry: attempt, maxRetries: retries, waitMs: Math.round(wait), err: err.message },
-        `Request failed. Retrying in ${Math.round(wait / 1000)}s...`,
+        `Request failed. Retrying in ${Math.round(wait / 1000)}s...`
       );
       await sleep(wait);
     }
@@ -271,9 +271,11 @@ async function main() {
       const result = await healthCheck();
       console.log(JSON.stringify(result, null, 2));
       process.exit(result.status === 'ok' ? 0 : 1);
+      return;
     } catch (err) {
       logger.error({ err: err.message }, 'Health check failed');
       process.exit(1);
+      return;
     }
   }
 

@@ -9,7 +9,9 @@ const SCRIPT = path.resolve(__dirname, '..', 'src', 'scraper.js');
 
 function run(args = []) {
   return new Promise((resolve, reject) => {
-    const proc = spawn(process.execPath, [SCRIPT, ...args]);
+    const proc = spawn(process.execPath, [SCRIPT, ...args], {
+      env: { ...process.env, SEARCH_QUERY: '' },
+    });
     let stdout = '';
     let stderr = '';
     proc.stdout.on('data', (d) => {
