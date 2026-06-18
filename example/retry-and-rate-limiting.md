@@ -50,10 +50,9 @@ The scraper logs structured JSON to stderr so it doesn't interfere with the JSON
 {"level":"warn","retry":1,"maxRetries":3,"waitMs":2033,"msg":"Rate limited (429). Retrying in 2s..."}
 {"level":"warn","retry":1,"maxRetries":3,"waitMs":2499,"err":"socket hang up","msg":"Request failed. Retrying in 2s..."}
 {"level":"error","retries":3,"msg":"Rate limited (429) — all retries exhausted."}
-{"level":"error","retries":3,"msg":"Failed after 3 retries"}
 ```
 
-If all retries are exhausted, the function throws an error with the message `"Failed after N retries"` (network errors) or `"Rate limited after N retries"` (429).
+If all retries are exhausted, the function throws an error. For 429 responses, the message is `"Rate limited after N retries"`. For network errors, the underlying axios or network error is re-thrown directly (e.g. `"socket hang up"`, `"timeout of 20000ms exceeded"`).
 
 ## Test coverage for retry paths
 
