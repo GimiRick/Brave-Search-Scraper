@@ -21,6 +21,11 @@ const USER_AGENTS = [
   'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
 ];
 
+/**
+ * Zod schema for validating search queries.
+ * Accepts a string, trims it, and enforces 1–500 character length.
+ * @type {import('zod').ZodString}
+ */
 const searchQuerySchema = z
   .string({
     required_error: 'Search query is required',
@@ -30,30 +35,65 @@ const searchQuerySchema = z
   .min(1, 'Search query cannot be empty')
   .max(500, 'Search query is too long');
 
+/**
+ * Validate and parse a search query string using the Zod schema.
+ * @param {unknown} query - Raw search query input.
+ * @returns {string} Trimmed, validated query string.
+ * @throws {ZodError} If validation fails.
+ */
 function validateSearchQuery(query) {
   return searchQuerySchema.parse(query);
 }
 
+/**
+ * Pick a random item from an array.
+ * @template T
+ * @param {T[]} arr - Non-empty array of items.
+ * @returns {T} A randomly selected element.
+ */
 function randomItem(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+/**
+ * Promise-based delay.
+ * @param {number} ms - Milliseconds to sleep.
+ * @returns {Promise<void>}
+ */
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+/**
+ * Extract cookie string from a Set-Cookie header value.
+ * Handles both single string and array headers.
+ * @param {string|string[]|undefined} setCookieHeader - Raw Set-Cookie header.
+ * @returns {string} Semi-colon joined cookie name=value pairs.
+ */
 function extractCookies(setCookieHeader) {
   if (!setCookieHeader) return '';
   const cookies = Array.isArray(setCookieHeader) ? setCookieHeader : [setCookieHeader];
   return cookies.map((c) => c.split(';')[0]).join('; ');
 }
 
+/**
+ * Check if a hostname belongs to Brave (brave.com or brave.app).
+ * @param {string|null|undefined} hostname - Hostname to check.
+ * @returns {boolean} True if the hostname is a Brave-owned domain.
+ */
 function isBraveDomain(hostname) {
   if (!hostname) return false;
   const h = hostname.toLowerCase();
   return h === 'brave.com' || h === 'brave.app' || h.endsWith('.brave.com') || h.endsWith('.brave.app');
 }
 
+/**
+ * Extract external URLs from a Cheerio-parsed Brave search results page.
+ * Filters out Brave-internal links, non-HTTP protocols, and de-duplicates.
+ * Reads from `<a href>`, `[data-result-url]`, and `[data-url]` attributes.
+ * @param {import('cheerio').CheerioAPI} $ - Cheerio instance with loaded HTML.
+ * @returns {string[]} Deduplicated array of absolute result URLs.
+ */
 function extractUrls($) {
   const urls = new Set();
 
@@ -98,6 +138,16 @@ function extractUrls($) {
   return [...urls];
 }
 
+/**
+ * Perform an HTTP GET with exponential backoff retry logic.
+ * Handles rate limiting (429) and transient network errors.
+ * @param {string} url - Target URL.
+ * @param {Record<string, string|number>} params - URL query parameters.
+ * @param {Record<string, string>} headers - HTTP request headers.
+ * @param {number} [retries=3] - Maximum number of retries after the initial attempt.
+ * @returns {Promise<import('axios').AxiosResponse>} Axios response object.
+ * @throws {Error} If all retries are exhausted.
+ */
 async function fetchWithRetry(url, params, headers, retries = 3) {
   for (let attempt = 1; attempt <= retries + 1; attempt++) {
     try {
@@ -136,6 +186,14 @@ async function fetchWithRetry(url, params, headers, retries = 3) {
   }
 }
 
+/**
+ * Scrape Brave Search for a given query across multiple result pages.
+ * Automatically acquires cookies from the Brave homepage before searching.
+ * @param {string} query - Search query string.
+ * @param {number} [pages=1] - Number of result pages to fetch (1–5).
+ * @returns {Promise<string[]>} Deduplicated array of result URLs.
+ * @throws {ZodError} If the query fails validation.
+ */
 async function scrapeBraveSearch(query, pages = 1) {
   const validatedQuery = validateSearchQuery(query);
   const pageCount = Math.max(1, Math.min(5, Math.floor(pages)));
@@ -195,6 +253,12 @@ async function scrapeBraveSearch(query, pages = 1) {
   return urls;
 }
 
+/**
+ * Run a health check covering Node.js version, required dependencies, and
+ * network reachability to search.brave.com.
+ * @returns {Promise<{status: string, version: string, timestamp: string, checks: object}>}
+ *   Health report object with overall status ('ok', 'degraded', or 'fail').
+ */
 async function healthCheck() {
   const pkg = require('../package.json');
   const checks = {
@@ -265,6 +329,12 @@ async function healthCheck() {
   };
 }
 
+/**
+ * CLI entry point. Parses command-line arguments or environment variables
+ * and runs either a health check or a search scrape.
+ * Supports `--health` flag, direct query argument, and `SEARCH_QUERY` env var.
+ * @returns {Promise<void>}
+ */
 async function main() {
   if (process.argv.includes('--health')) {
     try {
