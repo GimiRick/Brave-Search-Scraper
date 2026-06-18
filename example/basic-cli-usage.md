@@ -39,6 +39,35 @@ Or in one line:
 SEARCH_QUERY="climate change" node src/scraper.js
 ```
 
+## Health check
+
+Run diagnostics to verify the scraper is working:
+
+```bash
+brave-search-scraper --health
+```
+
+Or via git clone:
+
+```bash
+node src/scraper.js --health
+```
+
+Output:
+
+```json
+{
+  "status": "ok",
+  "version": "1.0.5",
+  "timestamp": "2026-06-18T11:11:01.244Z",
+  "checks": {
+    "node":        { "status": "ok", "version": "v24.15.0", "minRequired": ">=20.18.1" },
+    "dependencies": { "status": "ok", "loaded": ["axios","cheerio","zod","pino"], "missing": [] },
+    "network":     { "status": "ok", "reachable": true, "latencyMs": 128, "detail": "HTTP 200" }
+  }
+}
+```
+
 ## What happens if you don't provide a query
 
 The scraper prints a usage message and exits:
@@ -53,4 +82,5 @@ Or set the SEARCH_QUERY environment variable.
 ## Exit codes
 
 - `0`: success (results printed, or empty array `[]`)
-- `1`: error (no query given, or scraping failed)
+- `0`: health check passed (`--health` flag)
+- `1`: error (no query given, scraping failed, or health check failed)

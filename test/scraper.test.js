@@ -4,6 +4,9 @@
 // No modifications, alterations, or derivative works are permitted.
 
 'use strict';
+
+process.env.NODE_ENV = 'test';
+
 const { describe, it } = require('node:test');
 const assert = require('node:assert');
 const cheerio = require('cheerio');
@@ -15,6 +18,9 @@ const {
   extractUrls,
   fetchWithRetry,
   scrapeBraveSearch,
+  validateSearchQuery,
+  searchQuerySchema,
+  healthCheck,
 } = require('../src/scraper.js');
 
 describe('module exports', () => {
@@ -26,6 +32,81 @@ describe('module exports', () => {
     assert.strictEqual(typeof extractUrls, 'function');
     assert.strictEqual(typeof fetchWithRetry, 'function');
     assert.strictEqual(typeof scrapeBraveSearch, 'function');
+    assert.strictEqual(typeof validateSearchQuery, 'function');
+    assert.strictEqual(typeof healthCheck, 'function');
+  });
+
+  it('exports the searchQuerySchema', () => {
+    assert.ok(searchQuerySchema);
+    assert.strictEqual(typeof searchQuerySchema.parse, 'function');
+    assert.strictEqual(typeof searchQuerySchema.safeParse, 'function');
+  });
+});
+
+describe('validateSearchQuery', () => {
+  it('accepts a valid non-empty string', () => {
+    const result = validateSearchQuery('machine learning');
+    assert.strictEqual(result, 'machine learning');
+  });
+
+  it('accepts a string with special characters', () => {
+    const result = validateSearchQuery('node.js & react + "hooks"');
+    assert.strictEqual(result, 'node.js & react + "hooks"');
+  });
+
+  it('rejects empty string', () => {
+    assert.throws(() => validateSearchQuery(''), {
+      name: 'ZodError',
+    });
+  });
+
+  it('rejects string with only whitespace', () => {
+    assert.throws(() => validateSearchQuery('   '), {
+      name: 'ZodError',
+    });
+  });
+
+  it('rejects null', () => {
+    assert.throws(() => validateSearchQuery(null), {
+      name: 'ZodError',
+    });
+  });
+
+  it('rejects undefined', () => {
+    assert.throws(() => validateSearchQuery(undefined), {
+      name: 'ZodError',
+    });
+  });
+
+  it('rejects number', () => {
+    assert.throws(() => validateSearchQuery(42), {
+      name: 'ZodError',
+    });
+  });
+
+  it('rejects object', () => {
+    assert.throws(() => validateSearchQuery({}), {
+      name: 'ZodError',
+    });
+  });
+
+  it('rejects array', () => {
+    assert.throws(() => validateSearchQuery([]), {
+      name: 'ZodError',
+    });
+  });
+
+  it('rejects excessively long string (>500 chars)', () => {
+    const long = 'a'.repeat(501);
+    assert.throws(() => validateSearchQuery(long), {
+      name: 'ZodError',
+    });
+  });
+
+  it('accepts maximum length string (500 chars)', () => {
+    const max = 'a'.repeat(500);
+    const result = validateSearchQuery(max);
+    assert.strictEqual(result, max);
   });
 });
 
@@ -263,21 +344,74 @@ describe('fetchWithRetry', () => {
       assert.strictEqual(result.status, 200);
       assert.ok(result.data);
     } catch {
-      // Network failures are acceptable — depends on external services.
       assert.ok(true);
     }
   });
 });
 
 describe('scrapeBraveSearch', () => {
-  it('returns an array of URLs (or empty on failure)', async () => {
+  it('rejects empty query with validation error', async () => {
+    try {
+      await scrapeBraveSearch('');
+      assert.fail('Should have thrown');
+    } catch (err) {
+      assert.strictEqual(err.name, 'ZodError');
+      assert.ok(err.issues.length > 0);
+    }
+  });
+
+  it('rejects null query with validation error', async () => {
+    try {
+      await scrapeBraveSearch(null);
+      assert.fail('Should have thrown');
+    } catch (err) {
+      assert.strictEqual(err.name, 'ZodError');
+    }
+  });
+
+  it('returns an array of URLs (or empty on failure) for valid input', async () => {
     try {
       const urls = await scrapeBraveSearch('test');
       assert.ok(Array.isArray(urls));
     } catch {
-      // Network failures are acceptable — the function is async and
-      // depends on external services. Just verify it doesn't crash.
       assert.ok(true);
     }
+  });
+});
+
+describe('healthCheck', () => {
+  it('returns a health check result object with correct structure', async () => {
+    const result = await healthCheck();
+
+    assert.ok(result);
+    assert.strictEqual(typeof result, 'object');
+    assert.ok(['ok', 'degraded', 'fail'].includes(result.status));
+    assert.strictEqual(typeof result.version, 'string');
+    assert.strictEqual(typeof result.timestamp, 'string');
+    assert.ok(!isNaN(Date.parse(result.timestamp)));
+
+    assert.ok(result.checks);
+    assert.ok(result.checks.node);
+    assert.ok(result.checks.dependencies);
+    assert.ok(result.checks.network);
+
+    assert.ok(['ok', 'fail'].includes(result.checks.node.status));
+    assert.ok(['ok', 'fail'].includes(result.checks.dependencies.status));
+  });
+
+  it('reports all required dependencies as loaded', async () => {
+    const result = await healthCheck();
+    const deps = result.checks.dependencies;
+    assert.strictEqual(deps.status, 'ok');
+    assert.ok(deps.loaded.includes('axios'));
+    assert.ok(deps.loaded.includes('cheerio'));
+    assert.ok(deps.loaded.includes('zod'));
+    assert.ok(deps.loaded.includes('pino'));
+    assert.strictEqual(deps.missing.length, 0);
+  });
+
+  it('reports correct node version', async () => {
+    const result = await healthCheck();
+    assert.strictEqual(result.checks.node.version, process.version);
   });
 });

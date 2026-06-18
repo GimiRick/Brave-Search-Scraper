@@ -14,7 +14,7 @@
   <a href="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/codeql.yml"><img src="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/codeql.yml/badge.svg?branch=main" alt="CodeQL"></a>
   <a href="test/scraper.test.js"><img src="https://img.shields.io/badge/tests-node%3Atest-brightgreen?logo=node.js&logoColor=white" alt="tests"></a>
   <a href="SECURITY.md"><img src="https://img.shields.io/badge/security-policy-brightgreen?logo=github&logoColor=white" alt="security"></a>
-  <a href="package.json"><img src="https://img.shields.io/badge/dependencies-2%20direct-brightgreen" alt="dependencies"></a>
+  <a href="package.json"><img src="https://img.shields.io/badge/dependencies-4%20direct-brightgreen" alt="dependencies"></a>
   <br>
   <!-- REPO METRICS -->
   <a href="https://github.com/GimiRick/Brave-Search-Scraper/stargazers"><img src="https://img.shields.io/github/stars/GimiRick/Brave-Search-Scraper?logo=github&logoColor=white" alt="stars"></a>
@@ -34,7 +34,7 @@
   <a href="https://github.com/GimiRick/Brave-Search-Scraper/graphs/contributors"><img src="https://img.shields.io/badge/maintained-yes-brightgreen" alt="maintained"></a>
 </p>
 
-Brave Search Scraper is a Node.js library for scraping Brave Search, easily. It uses axios and cheerio to fetch and parse Brave Search results, returning a clean array of external URLs.
+Brave Search Scraper is a Node.js library for scraping Brave Search, easily. It uses axios and cheerio to fetch and parse Brave Search results, returning a clean array of external URLs. Features input validation with Zod, structured logging with Pino, and a built-in health check.
 
 ---
 
@@ -137,6 +137,8 @@ const {
   isBraveDomain,
   randomItem,
   sleep,
+  validateSearchQuery,
+  healthCheck,
 } = require('gimirick-brave-search-scraper');
 ```
 
@@ -230,6 +232,105 @@ const agents = [
 const agent = randomItem(agents);
 ```
 
+### Input validation with Zod
+
+`scrapeBraveSearch` validates every query before making any network request:
+
+```js
+const { scrapeBraveSearch } = require('gimirick-brave-search-scraper');
+
+await scrapeBraveSearch('');       // throws ZodError — empty
+await scrapeBraveSearch('   ');    // throws ZodError — only whitespace
+await scrapeBraveSearch(null);     // throws ZodError — not a string
+await scrapeBraveSearch(42);       // throws ZodError — not a string
+await scrapeBraveSearch('hello');  // ✅ passes, returns trimmed 'hello'
+```
+
+The schema is configurable. Access it directly:
+
+```js
+const { validateSearchQuery, searchQuerySchema } = require('gimirick-brave-search-scraper');
+
+validateSearchQuery('machine learning'); // 'machine learning'
+
+// Use the schema with your own validation:
+const result = searchQuerySchema.safeParse(userInput);
+if (!result.success) {
+  console.log(result.error.issues);
+}
+```
+
+Rules:
+- Must be a string (not null, undefined, number, object, array)
+- Must be non-empty after trimming whitespace
+- Maximum 500 characters
+
+### Health check
+
+Run diagnostics from the CLI or programmatically.
+
+**CLI:**
+
+```bash
+brave-search-scraper --health
+# or via git clone:
+node src/scraper.js --health
+```
+
+Output:
+
+```json
+{
+  "status": "ok",
+  "version": "1.0.5",
+  "timestamp": "2026-06-18T11:11:01.244Z",
+  "checks": {
+    "node":        { "status": "ok", "version": "v24.15.0", "minRequired": ">=20.18.1" },
+    "dependencies": { "status": "ok", "loaded": ["axios","cheerio","zod","pino"], "missing": [] },
+    "network":     { "status": "ok", "reachable": true, "latencyMs": 128, "detail": "HTTP 200" }
+  }
+}
+```
+
+Exit codes: `0` if all checks pass, `1` if any check fails.
+
+**Programmatic:**
+
+```js
+const { healthCheck } = require('gimirick-brave-search-scraper');
+
+const status = await healthCheck();
+console.log(status.status);    // 'ok' | 'degraded' | 'fail'
+console.log(status.checks.node.version);
+console.log(status.checks.dependencies.loaded);
+```
+
+### Structured logging with Pino
+
+All diagnostic messages are logged as structured JSON to stderr. No more parsing `console.error` output.
+
+```bash
+# JSON logs to stderr (human-readable stdout unaffected):
+brave-search-scraper "machine learning"
+
+# stderr output looks like:
+# {"level":"info","time":...,"name":"brave-search-scraper","msg":"Search completed"}
+# {"level":"warn","time":...,"name":"brave-search-scraper","retry":1,"maxRetries":3,"msg":"Rate limited..."}
+```
+
+**Log levels** (controlled by `LOG_LEVEL` or `DEBUG` env):
+| Env | Effect |
+| :-- | :----- |
+| _(none)_ | `info` — normal operation |
+| `LOG_LEVEL=debug` | Includes debug messages |
+| `LOG_LEVEL=warn` | Suppresses info messages |
+| `DEBUG=true` | Same as `LOG_LEVEL=debug` |
+| `NODE_ENV=test` or `TEST=true` | Silent (no log output) |
+
+```bash
+DEBUG=true node src/scraper.js "rust programming"
+```
+
 ---
 
 ## Docker
@@ -247,23 +348,36 @@ With an environment variable:
 docker run --rm -e SEARCH_QUERY="your query" brave-scraper
 ```
 
+Docker also supports the health check:
+
+```bash
+docker run --rm brave-scraper --health
+```
+
 ---
 
 ## How it works under the hood
 
-1. Visits the Brave Search homepage to collect session cookies.
-2. Waits 1–3 seconds with random jitter to avoid detection.
-3. Sends the search request with a rotated User-Agent and the collected cookies.
-4. If Brave returns a `429 Too Many Requests`, waits with exponential backoff and retries (up to 3 times by default).
-5. Parses the HTML with cheerio, extracting URLs from `<a href>`, `[data-result-url]`, and `[data-url]` attributes.
-6. Filters out all Brave-owned domains (`brave.com`, `brave.app` and subdomains).
-7. Deduplicates and returns a clean array of external URLs.
+1. Validates the search query (Zod) — fails fast on bad input, no network call made.
+2. Visits the Brave Search homepage to collect session cookies.
+3. Waits 1–3 seconds with random jitter to avoid detection.
+4. Sends the search request with a rotated User-Agent and the collected cookies.
+5. If Brave returns a `429 Too Many Requests`, waits with exponential backoff and retries (up to 3 times by default).
+6. All retries, warnings, and errors are logged as structured JSON to stderr via Pino.
+7. Parses the HTML with cheerio, extracting URLs from `<a href>`, `[data-result-url]`, and `[data-url]` attributes.
+8. Filters out all Brave-owned domains (`brave.com`, `brave.app` and subdomains).
+9. Deduplicates and returns a clean array of external URLs.
 
 ## Architecture
 
 ```
 User Input (argv / env)
        │
+       ▼
+┌─────────────────────────────┐
+│  validateSearchQuery (Zod)  │────► ZodError on invalid input
+└─────────────────────────────┘
+       │ (validated query)
        ▼
 ┌──────────────────────────┐
 │    scrapeBraveSearch     │
@@ -277,7 +391,7 @@ User Input (argv / env)
 │  3. GET search           │────► fetchWithRetry()
 │     (UA rotation,        │       └── axios.get()
 │      cookies)            │       └── exponential backoff
-│                          │
+│                          │       └── logger.warn/error (Pino)
 │  4. Parse HTML           │────► cheerio.load()
 │                          │
 │  5. Extract URLs         │────► extractUrls()
@@ -286,7 +400,17 @@ User Input (argv / env)
 │       │   result-url]    │
 │       └── [data-url]     │
 │                          │
-│  6. Return URLs          │────► JSON array
+│  6. Log + Return URLs    │────► logger.info + JSON array
+└──────────────────────────┘
+
+┌──────────────────────────┐
+│     healthCheck()        │
+│  ┌──────────────────┐    │
+│  │ node version      │    │
+│  │ dependencies      │    │
+│  │ network reachable │    │
+│  └──────────────────┘    │
+│  Returns structured JSON  │
 └──────────────────────────┘
 ```
 
@@ -297,7 +421,9 @@ User Input (argv / env)
 | Code | Meaning                                       |
 | :--- | :-------------------------------------------- |
 | `0`  | Success: results printed, or empty array `[]` |
+| `0`  | Health check passed (`--health` flag)         |
 | `1`  | Error: no query provided, or scraping failed  |
+| `1`  | Health check failed (`--health` flag)         |
 
 ---
 
@@ -306,7 +432,8 @@ User Input (argv / env)
 ```text
 brave-search-scraper/
   src/scraper.js        main scraper (also the module entry point)
-  test/scraper.test.js  unit and integration tests
+  src/logger.js         Pino structured logger setup
+  test/scraper.test.js  unit and integration tests (68 tests)
   Dockerfile            production Docker image
   package.json          dependencies and scripts
   example/              usage examples for each feature
