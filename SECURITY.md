@@ -4,11 +4,11 @@ We take security seriously. If you find something that does not look right, a vu
 
 ## How to report
 
-Open a **GitHub Issue** on this repository with the details.
+Use GitHub's **private vulnerability reporting** on this repository:
+go to the Security tab and click "Report a vulnerability". This keeps
+the report private until a fix is ready.
 
-Use a clear title that starts with `[security]` so we notice it right away.
-
-If you can, include:
+Please include:
 
 - What you found and where
 - Steps to reproduce it (a short example helps a lot)
