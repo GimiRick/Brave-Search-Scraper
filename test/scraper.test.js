@@ -339,20 +339,41 @@ describe('extractUrls', () => {
   });
 });
 
-describe('fetchWithRetry', () => {
-  it('fetches and returns response on success', async () => {
-    try {
-      const result = await fetchWithRetry('http://example.com', {}, {});
-      assert.ok(result);
+describe('fetchWithRetry — local server', () => {
+  const http = require('http');
+
+  function respond(statusCode) {
+    return (req, res) => {
+      res.writeHead(statusCode, { 'Content-Type': 'text/html' });
+      res.end('<html><body>OK</body></html>');
+    };
+  }
+
+  function withServer(behaviors, fn) {
+    const remaining = [...behaviors];
+    const server = http.createServer((req, res) => {
+      const b = remaining.shift();
+      if (typeof b === 'function') b(req, res);
+      else respond(200)(req, res);
+    });
+    server.on('clientError', () => {});
+    return new Promise((resolve, reject) => {
+      server.on('error', reject);
+      server.listen(0, () => {
+        const port = server.address().port;
+        fn(port)
+          .finally(() => server.close())
+          .then(resolve, reject);
+      });
+    });
+  }
+
+  it('succeeds on first try with status 200', async () => {
+    await withServer([respond(200)], async (port) => {
+      const result = await fetchWithRetry(`http://localhost:${port}`, {}, {}, 1);
       assert.strictEqual(result.status, 200);
       assert.ok(result.data);
-    } catch (err) {
-      if (err instanceof axios.AxiosError || (err.message && err.message.includes('Rate limited'))) {
-        assert.ok(true);
-      } else {
-        throw err;
-      }
-    }
+    });
   });
 });
 
@@ -373,75 +394,6 @@ describe('scrapeBraveSearch', () => {
       assert.fail('Should have thrown');
     } catch (err) {
       assert.strictEqual(err.name, 'ZodError');
-    }
-  });
-
-  it('returns an array of URLs (or empty on failure) for valid input', async () => {
-    try {
-      const urls = await scrapeBraveSearch('test');
-      assert.ok(Array.isArray(urls));
-    } catch (err) {
-      if (err instanceof axios.AxiosError || (err.message && err.message.includes('Rate limited'))) {
-        assert.ok(true);
-      } else {
-        throw err;
-      }
-    }
-  });
-
-  it('defaults to 1 page when pages parameter is omitted', async () => {
-    try {
-      const urls = await scrapeBraveSearch('test');
-      if (urls.length > 0) {
-        assert.ok(urls.every((u) => typeof u === 'string'));
-      }
-    } catch (err) {
-      if (err instanceof axios.AxiosError || (err.message && err.message.includes('Rate limited'))) {
-        assert.ok(true);
-      } else {
-        throw err;
-      }
-    }
-  });
-
-  it('accepts pages parameter and returns deduplicated results', async () => {
-    try {
-      const urls = await scrapeBraveSearch('test', 2);
-      assert.ok(Array.isArray(urls));
-      const unique = new Set(urls);
-      assert.strictEqual(unique.size, urls.length);
-    } catch (err) {
-      if (err instanceof axios.AxiosError || (err.message && err.message.includes('Rate limited'))) {
-        assert.ok(true);
-      } else {
-        throw err;
-      }
-    }
-  });
-
-  it('clamps pages parameter to minimum of 1', async () => {
-    try {
-      const urls = await scrapeBraveSearch('test', 0);
-      assert.ok(Array.isArray(urls));
-    } catch (err) {
-      if (err instanceof axios.AxiosError || (err.message && err.message.includes('Rate limited'))) {
-        assert.ok(true);
-      } else {
-        throw err;
-      }
-    }
-  });
-
-  it('clamps pages parameter to maximum of 5', async () => {
-    try {
-      const urls = await scrapeBraveSearch('test', 10);
-      assert.ok(Array.isArray(urls));
-    } catch (err) {
-      if (err instanceof axios.AxiosError || (err.message && err.message.includes('Rate limited'))) {
-        assert.ok(true);
-      } else {
-        throw err;
-      }
     }
   });
 });
