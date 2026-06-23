@@ -66,7 +66,10 @@ describe('main', () => {
   });
 
   it('handles validation error for long query', async () => {
+    let output = '';
+    console.log = (msg) => { output += msg; };
     process.argv = ['node', 'scraper.js', 'a'.repeat(501)];
     await main();
+    assert.strictEqual(output, '', 'should not produce any stdout output on validation error');
   });
 });

@@ -12,7 +12,7 @@
   <!-- CI / QUALITY -->
   <a href="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/ci.yml"><img src="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
   <a href="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/codeql.yml"><img src="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/codeql.yml/badge.svg?branch=main" alt="CodeQL"></a>
-  <a href="test/"><img src="https://img.shields.io/badge/tests-84%20node%3Atest-brightgreen?logo=node.js&logoColor=white" alt="tests"></a>
+  <a href="test/"><img src="https://img.shields.io/badge/tests-95%20node%3Atest-brightgreen?logo=node.js&logoColor=white" alt="tests"></a>
   <a href="package.json"><img src="https://img.shields.io/badge/coverage-93.57%25%20c8-brightgreen" alt="coverage"></a>
   <a href="SECURITY.md"><img src="https://img.shields.io/badge/security-policy-brightgreen?logo=github&logoColor=white" alt="security"></a>
   <a href="package.json"><img src="https://img.shields.io/badge/dependencies-4%20direct-brightgreen" alt="dependencies"></a>
@@ -35,7 +35,7 @@
   <a href="https://github.com/GimiRick/Brave-Search-Scraper/graphs/contributors"><img src="https://img.shields.io/badge/maintained-yes-brightgreen" alt="maintained"></a>
 </p>
 
-Brave Search Scraper is a Node.js library for scraping Brave Search, easily. It uses axios and cheerio to fetch and parse Brave Search results, returning a clean array of external URLs. Features input validation with Zod, structured logging with Pino, multi-page pagination, and a built-in health check.
+Brave Search Scraper is a Node.js library for scraping Brave Search and fetching instant summaries from DuckDuckGo. It uses axios and cheerio to parse Brave Search results, returning clean arrays of external URLs. Features include DuckDuckGo instant summaries, input validation with Zod, structured logging with Pino, multi-page pagination, and a built-in health check.
 
 ---
 
@@ -132,6 +132,7 @@ All examples below use `require('gimirick-brave-search-scraper')` (npm). If usin
 ```js
 const {
   scrapeBraveSearch,
+  fetchSummary,
   extractUrls,
   extractCookies,
   fetchWithRetry,
@@ -275,7 +276,10 @@ Run diagnostics from the CLI or programmatically.
 **CLI:**
 
 ```bash
+# via npm global install:
 brave-search-scraper --health
+# or via npx (no install):
+npx brave-search-scraper --health
 # or via git clone:
 node src/scraper.js --health
 ```
@@ -313,7 +317,10 @@ console.log(status.checks.dependencies.loaded);
 Print the installed version:
 
 ```bash
+# via npm global install:
 brave-search-scraper --version
+# or via npx (no install):
+npx brave-search-scraper --version
 # or via git clone:
 node src/scraper.js --version
 ```
@@ -321,6 +328,66 @@ node src/scraper.js --version
 Output: `1.1.4`
 
 Exit code: `0`.
+
+### Summary / Abstract (DuckDuckGo Instant Answer)
+
+Fetch a plain-text summary, answer, or definition for any query using the DuckDuckGo Instant Answer API. No Brave Search is involved — pure DuckDuckGo knowledge graph data.
+
+**CLI:**
+
+```bash
+# via npm global install:
+brave-search-scraper --summary "machine learning"
+# or via npx (no install):
+npx brave-search-scraper --summary "machine learning"
+# or via git clone:
+node src/scraper.js --summary "machine learning"
+```
+
+With an environment variable (works with all three methods):
+
+```bash
+SEARCH_QUERY="machine learning" brave-search-scraper --summary
+SEARCH_QUERY="machine learning" npx brave-search-scraper --summary
+SEARCH_QUERY="machine learning" node src/scraper.js --summary
+```
+
+Output:
+
+```json
+{
+  "query": "machine learning",
+  "heading": "Machine learning",
+  "abstract": "Machine learning (ML) is a field of study in artificial intelligence...",
+  "source": "Wikipedia",
+  "sourceUrl": "https://en.wikipedia.org/wiki/Machine_learning",
+  "answer": null,
+  "answerType": null,
+  "definition": null,
+  "definitionSource": null,
+  "definitionUrl": null,
+  "imageUrl": null,
+  "type": "A",
+  "hasAbstract": true,
+  "hasAnswer": false,
+  "hasDefinition": false
+}
+```
+
+**Programmatic:**
+
+```js
+const { fetchSummary } = require('gimirick-brave-search-scraper');
+
+const result = await fetchSummary('quantum computing');
+console.log(result.abstract);       // plain-text abstract
+console.log(result.source);         // attribution source (e.g. "Wikipedia")
+console.log(result.sourceUrl);      // link to the source article
+console.log(result.answer);         // direct answer (e.g. "42")
+console.log(result.imageUrl);       // image URL if available
+```
+
+The function shares the same Zod validation as `scrapeBraveSearch` — empty, null, and non-string queries throw `ZodError` before any network request is made. Internally it uses `fetchWithRetry` with 2 retries and User-Agent rotation.
 
 ### Pagination
 
@@ -394,16 +461,19 @@ With an environment variable:
 docker run --rm -e SEARCH_QUERY="your query" brave-scraper
 ```
 
-Docker also supports the health check and version flag:
+Docker also supports the health check, version, and summary flags:
 
 ```bash
 docker run --rm brave-scraper --health
 docker run --rm brave-scraper --version
+docker run --rm brave-scraper --summary "machine learning"
 ```
 
 ---
 
 ## How it works under the hood
+
+### Brave Search scraping
 
 1. Validates the search query (Zod) — fails fast on bad input, no network call made.
 2. Visits the Brave Search homepage to collect session cookies.
@@ -416,21 +486,30 @@ docker run --rm brave-scraper --version
 9. Filters out all Brave-owned domains (`brave.com`, `brave.app` and subdomains).
 10. Deduplicates across all pages and returns a clean array of external URLs.
 
+### DuckDuckGo summary fetching
+
+1. Validates the query with the same Zod schema.
+2. Sends a GET to `https://api.duckduckgo.com/` with `format=json`, `no_html=1`, `skip_disambig=1`.
+3. Parses the response into a structured object with abstract, answer, definition, and metadata fields.
+4. Returns the result; all empty/missing fields are set to `null`.
+
 ## Architecture
 
 ```
 User Input (argv / env)
        │
-       ▼
-┌─────────────────────────────┐
-│  validateSearchQuery (Zod)  │────► ZodError on invalid input
-└─────────────────────────────┘
-       │ (validated query)
-       ▼
-┌──────────────────────────┐
-│    scrapeBraveSearch     │
-│        (query)           │
-│                          │
+       ├── --summary ──────────────────────────────────┐
+       │                                                │
+       ▼                                                ▼
+┌─────────────────────────────┐          ┌──────────────────────────┐
+│  validateSearchQuery (Zod)  │──ZodError─►    fetchSummary()       │
+└─────────────────────────────┘          │                          │
+       │ (validated query)               │  fetchWithRetry()        │
+       ▼                                 │    └── DuckDuckGo API    │
+┌──────────────────────────┐             │  Returns structured      │
+│    scrapeBraveSearch     │             │  JSON with abstract,     │
+│        (query)           │             │  answer, definition      │
+│                          │             └──────────────────────────┘
 │  1. GET homepage         │────► extractCookies()
 │     (collect cookies)    │
 │                          │
@@ -468,13 +547,15 @@ User Input (argv / env)
 
 ## Exit codes (CLI)
 
-| Code | Meaning                                       |
-| :--- | :-------------------------------------------- |
-| `0`  | Success: results printed, or empty array `[]` |
-| `0`  | Health check passed (`--health` flag)         |
-| `0`  | Version printed (`--version` flag)            |
-| `1`  | Error: no query provided, or scraping failed  |
-| `1`  | Health check failed (`--health` flag)         |
+| Code | Meaning                                                  |
+| :--- | :------------------------------------------------------- |
+| `0`  | Success: results printed, or empty array `[]`            |
+| `0`  | Summary printed (`--summary` flag)                       |
+| `0`  | Health check passed (`--health` flag)                    |
+| `0`  | Version printed (`--version` flag)                       |
+| `1`  | Error: no query provided, or scraping failed             |
+| `1`  | Summary fetch failed (`--summary` flag)                  |
+| `1`  | Health check failed (`--health` flag)                    |
 
 ---
 
@@ -482,10 +563,11 @@ User Input (argv / env)
 
 ```text
 brave-search-scraper/
-  src/scraper.js        main scraper (also the module entry point)
+  src/scraper.js        main module (scraper + summary + CLI)
   src/logger.js         Pino structured logger setup
   test/
     scraper.test.js     core unit and integration tests
+    summary.test.js     DuckDuckGo summary/abstract tests
     cli.test.js         CLI behavior tests via child process
     main.test.js        main() entry point tests via process mocking
     retry.test.js       fetchWithRetry retry tests via local HTTP server

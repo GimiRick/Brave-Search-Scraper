@@ -7,7 +7,7 @@ You can import the scraper into your own Node.js project instead of using the CL
 ## Basic example
 
 ```js
-const { scrapeBraveSearch, healthCheck } = require('gimirick-brave-search-scraper');
+const { scrapeBraveSearch, fetchSummary, healthCheck } = require('gimirick-brave-search-scraper');
 
 async function main() {
   try {
@@ -85,6 +85,60 @@ console.log(`Found ${urls.length} results across 3 pages`);
 - Adds 1–3s delay between pages to avoid rate limiting.
 - URLs are deduplicated across pages.
 
+## Summary / Abstract (DuckDuckGo)
+
+Fetch a plain-text summary, answer, or definition for any query using the DuckDuckGo Instant Answer API:
+
+```js
+const { fetchSummary } = require('gimirick-brave-search-scraper');
+
+async function getSummary() {
+  try {
+    const result = await fetchSummary('quantum computing');
+
+    if (result.hasAbstract) {
+      console.log(`Heading: ${result.heading}`);
+      console.log(`Abstract: ${result.abstract}`);
+      console.log(`Source: ${result.source} (${result.sourceUrl})`);
+    }
+
+    if (result.hasAnswer) {
+      console.log(`Answer: ${result.answer}`);
+    }
+
+    if (result.hasDefinition) {
+      console.log(`Definition: ${result.definition}`);
+    }
+  } catch (err) {
+    console.error('Summary fetch failed:', err.message);
+  }
+}
+
+getSummary();
+```
+
+Returns an object with the following fields:
+
+| Field | Type | Description |
+| :---- | :--- | :---------- |
+| `query` | `string` | The validated query sent to the API |
+| `heading` | `string\|null` | Title / heading of the result |
+| `abstract` | `string\|null` | Plain-text abstract / summary |
+| `source` | `string\|null` | Attribution source (e.g. Wikipedia) |
+| `sourceUrl` | `string\|null` | URL to the full source article |
+| `answer` | `string\|null` | Direct answer (e.g. "42" for a calculation) |
+| `answerType` | `string\|null` | Type of direct answer |
+| `definition` | `string\|null` | Short definition if available |
+| `definitionSource` | `string\|null` | Source of the definition |
+| `definitionUrl` | `string\|null` | URL for the definition source |
+| `imageUrl` | `string\|null` | Related image URL (if any) |
+| `type` | `string\|null` | API response type (`A`, `D`, etc.) |
+| `hasAbstract` | `boolean` | Whether an abstract was returned |
+| `hasAnswer` | `boolean` | Whether a direct answer was returned |
+| `hasDefinition` | `boolean` | Whether a definition was returned |
+
+The same Zod validation from `scrapeBraveSearch` applies — empty, null, and non-string queries throw `ZodError` before any network request. Internally it uses `fetchWithRetry` with 2 retries and User-Agent rotation.
+
 ## Health check
 
 ```js
@@ -98,7 +152,7 @@ console.log(result.checks.network.latencyMs);
 
 ## Coverage
 
-The test suite includes **84 tests** across 4 test files. Generate a coverage report:
+The test suite includes **95 tests** across 5 test files. Generate a coverage report:
 
 ```bash
 npm run coverage

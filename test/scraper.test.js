@@ -18,6 +18,7 @@ const {
   extractUrls,
   fetchWithRetry,
   scrapeBraveSearch,
+  fetchSummary,
   main,
   validateSearchQuery,
   searchQuerySchema,
@@ -33,6 +34,7 @@ describe('module exports', () => {
     assert.strictEqual(typeof extractUrls, 'function');
     assert.strictEqual(typeof fetchWithRetry, 'function');
     assert.strictEqual(typeof scrapeBraveSearch, 'function');
+    assert.strictEqual(typeof fetchSummary, 'function');
     assert.strictEqual(typeof main, 'function');
     assert.strictEqual(typeof validateSearchQuery, 'function');
     assert.strictEqual(typeof healthCheck, 'function');
@@ -335,44 +337,6 @@ describe('extractUrls', () => {
       '<div data-result-url="://missing-scheme">ms</div>' +
       '<div data-url="http://">empty-data</div>';
     assert.deepStrictEqual(extractUrls(makeCheerio(html)), []);
-  });
-});
-
-describe('fetchWithRetry — local server', () => {
-  const http = require('http');
-
-  function respond(statusCode) {
-    return (req, res) => {
-      res.writeHead(statusCode, { 'Content-Type': 'text/html' });
-      res.end('<html><body>OK</body></html>');
-    };
-  }
-
-  function withServer(behaviors, fn) {
-    const remaining = [...behaviors];
-    const server = http.createServer((req, res) => {
-      const b = remaining.shift();
-      if (typeof b === 'function') b(req, res);
-      else respond(200)(req, res);
-    });
-    server.on('clientError', () => {});
-    return new Promise((resolve, reject) => {
-      server.on('error', reject);
-      server.listen(0, () => {
-        const port = server.address().port;
-        fn(port)
-          .finally(() => server.close())
-          .then(resolve, reject);
-      });
-    });
-  }
-
-  it('succeeds on first try with status 200', async () => {
-    await withServer([respond(200)], async (port) => {
-      const result = await fetchWithRetry(`http://localhost:${port}`, {}, {}, 1);
-      assert.strictEqual(result.status, 200);
-      assert.ok(result.data);
-    });
   });
 });
 

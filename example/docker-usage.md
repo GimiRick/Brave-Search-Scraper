@@ -20,6 +20,16 @@ docker run --rm brave-scraper "your search query"
 docker run --rm -e SEARCH_QUERY="your query" brave-scraper
 ```
 
+## Docker flags
+
+All CLI flags work inside Docker:
+
+```bash
+docker run --rm brave-scraper --summary "machine learning"
+docker run --rm brave-scraper --health
+docker run --rm brave-scraper --version
+```
+
 ## How it works
 
 The Dockerfile:

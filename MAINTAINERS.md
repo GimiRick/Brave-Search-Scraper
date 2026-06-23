@@ -2,7 +2,7 @@
 
 ## Architecture Overview
 
-This is a single-module CLI scraper. The entire scraping pipeline lives in `src/scraper.js` (383 lines). The dependency graph is flat:
+This is a single-module CLI tool. The entire pipeline lives in `src/scraper.js` (487 lines). The dependency graph is flat:
 
 ```
 src/scraper.js  ──►  src/logger.js
@@ -12,7 +12,7 @@ src/scraper.js  ──►  src/logger.js
      └── zod
 ```
 
-### Pipeline
+### Scraper pipeline
 
 ```
 CLI args / SEARCH_QUERY env
@@ -20,16 +20,19 @@ CLI args / SEARCH_QUERY env
         ▼
   validateSearchQuery()     ← Zod schema (searchQuerySchema)
         │
-        ▼
-  scrapeBraveSearch()
+        ├── (default) ──► scrapeBraveSearch()
+        │                    ├── GET https://search.brave.com/   → cookies
+        │                    ├── sleep(1-3s random delay)
+        │                    ├── fetchWithRetry() × N pages      ← backoff
+        │                    └── extractUrls()                   ← cheerio
+        │                    │
+        │                    ▼
+        │              JSON string[] → stdout
         │
-        ├── GET https://search.brave.com/   → acquires cookies
-        ├── sleep(1-3s random delay)
-        ├── fetchWithRetry() × N pages       ← exponential backoff on 429/errors
-        └── extractUrls()                    ← parses <a>, [data-url], [data-result-url]
-        │
-        ▼
-   JSON string[] → stdout
+        └── --summary ──► fetchSummary()
+                             ├── fetchWithRetry()
+                             │    └── DuckDuckGo Instant Answer API
+                             └── structured JSON → stdout
 ```
 
 ## Key Exports (`src/scraper.js`)
@@ -45,6 +48,7 @@ CLI args / SEARCH_QUERY env
 | `extractUrls`         | `($: CheerioAPI) => string[]`                                | Extract result URLs from HTML   |
 | `fetchWithRetry`      | `(url, params, headers, retries?) => Promise<AxiosResponse>` | HTTP GET with backoff           |
 | `scrapeBraveSearch`   | `(query: string, pages?: number) => Promise<string[]>`       | Main scraper entry              |
+| `fetchSummary`        | `(query: string, apiUrl?: string) => Promise<SummaryResult>` | DuckDuckGo instant summary      |
 | `healthCheck`         | `() => Promise<HealthReport>`                                | Node/deps/network check         |
 | `main`                | `() => Promise<void>`                                        | CLI entry point                 |
 
@@ -60,12 +64,13 @@ CLI args / SEARCH_QUERY env
 ## Development
 
 ```bash
-npm test          # 84 tests (node:test)
+npm test          # 95 tests (node:test)
 npm run lint      # ESLint flat config
 npm run format    # Auto-format all files with Prettier
-node src/scraper.js "query"    # Run directly
-node src/scraper.js --health   # Health check
-node src/scraper.js --version  # Print version
+node src/scraper.js "query"             # Run directly
+node src/scraper.js --health            # Health check
+node src/scraper.js --version           # Print version
+node src/scraper.js --summary "query"   # DuckDuckGo summary
 ```
 
 ## Design Decisions
@@ -74,7 +79,7 @@ node src/scraper.js --version  # Print version
 - **No config system**: CLI flags and env vars only. Keeps the package zero-config for consumers.
 - **Cheerio over puppeteer**: Lighter, faster, no browser dependency. Only works because Brave Search renders results server-side in HTML.
 - **Retry strategy**: Exponential backoff with jitter. 3 retries by default (configurable via `retries` param). Both 429 responses and transient network errors are retried.
-- **Single-file scraper**: All logic in one module deliberately. Simplifies maintenance for a single developer. If the scraper grows beyond ~500 lines, consider splitting into `src/parse.js`, `src/network.js`, `src/cli.js`.
+- **Single-file module**: All logic in one module deliberately. Simplifies maintenance for a single developer. If the module grows beyond ~600 lines, consider splitting into `src/scrape.js`, `src/summary.js`, `src/network.js`, `src/cli.js`.
 
 ## Known Limitations
 

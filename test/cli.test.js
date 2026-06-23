@@ -59,4 +59,15 @@ describe('CLI', () => {
     assert.strictEqual(code, 0);
     assert.match(stdout, /^\d+\.\d+\.\d+/);
   });
+
+  it('--summary without query prints usage and exits 1', async () => {
+    const { code, stderr } = await run(['--summary']);
+    assert.strictEqual(code, 1);
+    assert.ok(stderr.includes('Usage'), `stderr should contain "Usage": ${stderr}`);
+  });
+
+  it('--summary with empty query string exits 1', async () => {
+    const { code } = await run(['--summary', '']);
+    assert.strictEqual(code, 1);
+  });
 });

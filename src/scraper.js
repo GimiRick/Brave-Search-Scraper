@@ -13,6 +13,7 @@ const { z, ZodError } = require('zod');
 const logger = require('./logger');
 
 const BRAVE_SEARCH_URL = 'https://search.brave.com/search';
+const DUCKDUCKGO_API_URL = 'https://api.duckduckgo.com/';
 
 const USER_AGENTS = [
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
@@ -228,6 +229,82 @@ async function scrapeBraveSearch(query, pages = 1) {
 }
 
 /**
+ * Fetch a summary/abstract for a query from the DuckDuckGo Instant Answer API.
+ * Automatically handles validation, retries, and response parsing.
+ * The API response provides an abstract text, answer, definition, and metadata.
+ * @param {string} query - Search query to look up.
+ * @param {string} [apiUrl] - API endpoint URL override (primarily for testing).
+ *   Defaults to {@link DUCKDUCKGO_API_URL}.
+ * @returns {Promise<{
+ *   query: string,
+ *   heading: string|null,
+ *   abstract: string|null,
+ *   source: string|null,
+ *   sourceUrl: string|null,
+ *   answer: string|null,
+ *   answerType: string|null,
+ *   definition: string|null,
+ *   definitionSource: string|null,
+ *   definitionUrl: string|null,
+ *   imageUrl: string|null,
+ *   type: string|null,
+ *   hasAbstract: boolean,
+ *   hasAnswer: boolean,
+ *   hasDefinition: boolean
+ * }>} Structured summary object.
+ * @throws {ZodError} If the query fails validation.
+ * @throws {Error} If the API request fails after retries.
+ */
+async function fetchSummary(query, apiUrl) {
+  const validatedQuery = validateSearchQuery(query);
+  const url = apiUrl || DUCKDUCKGO_API_URL;
+
+  logger.info({ query: validatedQuery }, 'Fetching summary from DuckDuckGo');
+
+  const response = await fetchWithRetry(
+    url,
+    {
+      q: validatedQuery,
+      format: 'json',
+      no_html: 1,
+      skip_disambig: 1,
+    },
+    {
+      'User-Agent': randomItem(USER_AGENTS),
+      Accept: 'application/json',
+    },
+    2
+  );
+
+  const data = response.data;
+
+  const result = {
+    query: validatedQuery,
+    heading: data.Heading || null,
+    abstract: data.AbstractText || null,
+    source: data.AbstractSource || null,
+    sourceUrl: data.AbstractURL || null,
+    answer: data.Answer || null,
+    answerType: data.AnswerType || null,
+    definition: data.Definition || null,
+    definitionSource: data.DefinitionSource || null,
+    definitionUrl: data.DefinitionURL || null,
+    imageUrl: data.Image ? `https://duckduckgo.com${data.Image}` : null,
+    type: data.Type || null,
+    hasAbstract: Boolean(data.AbstractText),
+    hasAnswer: Boolean(data.Answer),
+    hasDefinition: Boolean(data.Definition),
+  };
+
+  logger.info(
+    { query: validatedQuery, hasAbstract: result.hasAbstract, hasAnswer: result.hasAnswer },
+    'Summary fetched'
+  );
+
+  return result;
+}
+
+/**
  * Run a health check covering Node.js version, required dependencies, and
  * network reachability to search.brave.com.
  * @returns {Promise<{status: string, version: string, timestamp: string, checks: object}>}
@@ -304,8 +381,8 @@ async function healthCheck() {
 
 /**
  * CLI entry point. Parses command-line arguments or environment variables
- * and runs either a health check, version output, or a search scrape.
- * Supports `--health`, `--version` flags, direct query argument, and `SEARCH_QUERY` env var.
+ * and runs either a health check, version output, summary fetch, or a search scrape.
+ * Supports `--health`, `--version`, `--summary` flags, direct query argument, and `SEARCH_QUERY` env var.
  * @returns {Promise<void>}
  */
 async function main() {
@@ -327,6 +404,35 @@ async function main() {
       process.exit(1);
       return;
     }
+  }
+
+  if (process.argv.includes('--summary')) {
+    const summaryIndex = process.argv.indexOf('--summary');
+    const summaryQuery = process.argv[summaryIndex + 1] || process.env.SEARCH_QUERY;
+
+    if (!summaryQuery) {
+      console.error('Usage: node src/scraper.js --summary "<search-query>"');
+      console.error('   or: brave-search-scraper --summary "<search-query>"  (when installed via npm)');
+      console.error('   or: npx brave-search-scraper --summary "<search-query>"');
+      console.error('   or: set the SEARCH_QUERY environment variable with --summary');
+      process.exit(1);
+      return;
+    }
+
+    try {
+      const result = await fetchSummary(summaryQuery);
+      console.log(JSON.stringify(result, null, 2));
+    } catch (err) {
+      if (err instanceof ZodError) {
+        logger.error({ issues: err.issues }, 'Validation failed');
+      } else {
+        logger.error({ err: err.message }, 'Summary fetch failed');
+      }
+      process.exit(1);
+      return;
+    }
+
+    return;
   }
 
   const query = process.argv[2] || process.env.SEARCH_QUERY;
@@ -373,6 +479,7 @@ module.exports = {
   extractUrls,
   fetchWithRetry,
   scrapeBraveSearch,
+  fetchSummary,
   main,
   validateSearchQuery,
   searchQuerySchema,

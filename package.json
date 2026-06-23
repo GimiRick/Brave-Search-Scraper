@@ -1,7 +1,7 @@
 {
   "name": "gimirick-brave-search-scraper",
   "version": "1.1.4",
-  "description": "Server-side scraper that queries Brave Search and extracts URLs",
+  "description": "Server-side scraper that queries Brave Search and extracts URLs, with DuckDuckGo Instant Answer summaries",
   "license": "CC-BY-NC-ND-4.0",
   "engines": {
     "node": ">=20.18.1"
