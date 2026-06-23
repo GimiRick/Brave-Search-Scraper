@@ -27,10 +27,7 @@ const USER_AGENTS = [
  * @type {import('zod').ZodString}
  */
 const searchQuerySchema = z
-  .string({
-    required_error: 'Search query is required',
-    invalid_type_error: 'Search query must be a string',
-  })
+  .string()
   .trim()
   .min(1, 'Search query cannot be empty')
   .max(500, 'Search query is too long');
@@ -173,7 +170,7 @@ async function fetchWithRetry(url, params, headers, retries = 3) {
  */
 async function scrapeBraveSearch(query, pages = 1) {
   const validatedQuery = validateSearchQuery(query);
-  const pageCount = Math.max(1, Math.min(5, Math.floor(pages)));
+  const pageCount = Math.max(1, Math.min(5, Math.floor(+pages) || 1));
 
   const homeHeaders = {
     'User-Agent': randomItem(USER_AGENTS),
