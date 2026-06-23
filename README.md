@@ -3,7 +3,7 @@
 <p align="center">
   <!-- PACKAGE INFO -->
   <a href="https://www.npmjs.com/package/gimirick-brave-search-scraper"><img src="https://img.shields.io/npm/v/gimirick-brave-search-scraper?logo=npm&logoColor=white" alt="npm version"></a>
-  <a href="package.json"><img src="https://img.shields.io/badge/repo%20version-1.1.3-blue?logo=git&logoColor=white" alt="repo version"></a>
+  <a href="package.json"><img src="https://img.shields.io/badge/repo%20version-1.1.4-blue?logo=git&logoColor=white" alt="repo version"></a>
   <a href="https://www.npmjs.com/package/gimirick-brave-search-scraper"><img src="https://img.shields.io/npm/dm/gimirick-brave-search-scraper?logo=npm&logoColor=white" alt="npm downloads"></a>
   <a href="https://www.npmjs.com/package/gimirick-brave-search-scraper"><img src="https://img.shields.io/npm/dw/gimirick-brave-search-scraper" alt="npm downloads/week"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC--ND%204.0-lightgrey?logo=creativecommons&logoColor=white" alt="license"></a>
@@ -285,12 +285,12 @@ Output:
 ```json
 {
   "status": "ok",
-  "version": "1.1.3",
-  "timestamp": "2026-06-18T11:11:01.244Z",
+  "version": "1.1.4",
+  "timestamp": "2026-06-23T16:27:16.358Z",
   "checks": {
     "node": { "status": "ok", "version": "v24.15.0", "minRequired": ">=20.18.1" },
     "dependencies": { "status": "ok", "loaded": ["axios", "cheerio", "zod", "pino"], "missing": [] },
-    "network": { "status": "ok", "reachable": true, "latencyMs": 128, "detail": "HTTP 200" }
+    "network": { "status": "ok", "reachable": true, "latencyMs": 155, "detail": "HTTP 200" }
   }
 }
 ```
@@ -318,7 +318,7 @@ brave-search-scraper --version
 node src/scraper.js --version
 ```
 
-Output: `1.1.3`
+Output: `1.1.4`
 
 Exit code: `0`.
 
