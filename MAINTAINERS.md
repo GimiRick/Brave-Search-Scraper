@@ -64,7 +64,7 @@ CLI args / SEARCH_QUERY env
 ## Development
 
 ```bash
-npm test          # 95 tests (node:test)
+npm test          # 96 tests (node:test)
 npm run lint      # ESLint flat config
 npm run format    # Auto-format all files with Prettier
 node src/scraper.js "query"             # Run directly

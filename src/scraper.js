@@ -289,7 +289,11 @@ async function fetchSummary(query, apiUrl) {
     definition: data.Definition || null,
     definitionSource: data.DefinitionSource || null,
     definitionUrl: data.DefinitionURL || null,
-    imageUrl: data.Image ? `https://duckduckgo.com${data.Image}` : null,
+    imageUrl: data.Image
+      ? (data.Image.startsWith('http://') || data.Image.startsWith('https://')
+        ? data.Image
+        : `https://duckduckgo.com${data.Image}`)
+      : null,
     type: data.Type || null,
     hasAbstract: Boolean(data.AbstractText),
     hasAnswer: Boolean(data.Answer),

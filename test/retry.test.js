@@ -27,7 +27,7 @@ function withServer(behaviors, fn) {
     if (typeof b === 'function') {
       b(req, res);
     } else {
-      respond(200)(req, res);
+      res.destroy(new Error('Unexpected request: no behavior defined'));
     }
   });
   server.on('clientError', () => {});

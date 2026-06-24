@@ -270,6 +270,30 @@ describe('fetchSummary', () => {
     });
   });
 
+  it('handles API with absolute image URL', async () => {
+    const apiResponse = {
+      AbstractText: 'Some text',
+      AbstractSource: 'Source',
+      AbstractURL: 'https://example.com',
+      Heading: 'Test',
+      Answer: '',
+      AnswerType: '',
+      Definition: '',
+      DefinitionSource: '',
+      DefinitionURL: '',
+      Image: 'https://example.com/external-image.jpg',
+      Type: 'A',
+      RelatedTopics: [],
+    };
+
+    const server = createServer(apiResponse);
+    await withServer(server, async (port) => {
+      const result = await fetchSummary('test', `http://localhost:${port}`);
+      assert.strictEqual(result.imageUrl, 'https://example.com/external-image.jpg');
+      assert.strictEqual(result.abstract, 'Some text');
+    });
+  });
+
   it('handles query with special characters', async () => {
     const apiResponse = {
       AbstractText: 'Node.js is a JavaScript runtime',
@@ -320,13 +344,9 @@ describe('fetchSummary', () => {
   });
 
   it('sends request with correct query parameter', async () => {
+    const urls = [];
     const server = http.createServer((req, res) => {
-      const url = new URL(req.url, 'http://localhost');
-      assert.strictEqual(url.searchParams.get('q'), 'validation test');
-      assert.strictEqual(url.searchParams.get('format'), 'json');
-      assert.strictEqual(url.searchParams.get('no_html'), '1');
-      assert.strictEqual(url.searchParams.get('skip_disambig'), '1');
-
+      urls.push(req.url);
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         AbstractText: 'Validated',
@@ -347,5 +367,12 @@ describe('fetchSummary', () => {
       const result = await fetchSummary('validation test', `http://localhost:${port}`);
       assert.strictEqual(result.abstract, 'Validated');
     });
+
+    assert.strictEqual(urls.length, 1);
+    const url = new URL(urls[0], 'http://localhost');
+    assert.strictEqual(url.searchParams.get('q'), 'validation test');
+    assert.strictEqual(url.searchParams.get('format'), 'json');
+    assert.strictEqual(url.searchParams.get('no_html'), '1');
+    assert.strictEqual(url.searchParams.get('skip_disambig'), '1');
   });
 });
