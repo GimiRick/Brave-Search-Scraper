@@ -87,6 +87,7 @@ node src/scraper.js --summary "query"   # DuckDuckGo summary
 - No programmatic API other than calling the exported functions directly.
 - Brave Search page structure changes can break `extractUrls()` — the most fragile part of the codebase.
 - No caching layer — each scrape fetches fresh results.
+- Does not support advanced Brave Search features (News, Images, Local results, AI summaries) — only standard web results.
 
 ## License
 
