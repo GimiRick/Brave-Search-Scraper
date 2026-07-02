@@ -151,6 +151,7 @@ async function fetchWithRetry(url, params, headers, retries = 3) {
       return response;
     } catch (err) {
       if (attempt === retries + 1) throw err;
+      if (err.response && err.response.status >= 400 && err.response.status < 500) throw err;
       const wait = Math.min(1000 * Math.pow(2, attempt) + Math.random() * 1000, 10000);
       logger.warn(
         { retry: attempt, maxRetries: retries, waitMs: Math.round(wait), err: err.message },
