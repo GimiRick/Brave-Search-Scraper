@@ -13,6 +13,7 @@
   <a href="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/ci.yml"><img src="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
   <a href="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/codeql.yml"><img src="https://github.com/GimiRick/Brave-Search-Scraper/actions/workflows/codeql.yml/badge.svg?branch=main" alt="CodeQL"></a>
   <a href="test/"><img src="https://img.shields.io/badge/tests-95%20node%3Atest-brightgreen?logo=node.js&logoColor=white" alt="tests"></a>
+  <a href="https://deepwiki.com/GimiRick/Brave-Search-Scraper"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
   <a href="package.json"><img src="https://img.shields.io/badge/coverage-93.57%25%20c8-brightgreen" alt="coverage"></a>
   <a href="SECURITY.md"><img src="https://img.shields.io/badge/security-policy-brightgreen?logo=github&logoColor=white" alt="security"></a>
   <a href="package.json"><img src="https://img.shields.io/badge/dependencies-4%20direct-brightgreen" alt="dependencies"></a>
