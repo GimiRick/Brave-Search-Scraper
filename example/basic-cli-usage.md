@@ -66,7 +66,7 @@ Output:
 ```json
 {
   "status": "ok",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "timestamp": "2026-06-18T11:11:01.244Z",
   "checks": {
     "node": { "status": "ok", "version": "v24.15.0", "minRequired": ">=20.18.1" },
@@ -89,7 +89,7 @@ npx brave-search-scraper --version
 node src/scraper.js --version
 ```
 
-Output: `1.1.5`
+Output: `1.1.6`
 
 ## Using the `main()` function programmatically
 
